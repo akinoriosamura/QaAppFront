@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns="http://www.w3.org/ns/widgets" id="com.example.helloworld" version="1.0.0">
-  <name>question_sample</name>
+  <name>OsamuraApp</name>
   <description/>
   <author/>
   <access origin="*"/>
