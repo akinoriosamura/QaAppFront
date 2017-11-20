@@ -15,4 +15,3 @@ new Vue({
   template:'<app></app>',
   components: { App }
 });
-

@@ -5,7 +5,7 @@
   :visible="true"
   :index.sync="activeIndex2"
   >
-  <v-ons-tabbar>
+  </v-ons-tabbar>
 </v-ons-page>
 </template>
 
@@ -22,8 +22,10 @@ export default{
           label:'質問',
           page:Questions
         },
-        label:'専門家',
-        page:Specialists
+        {
+          label:'専門家',
+          page:Specialists
+        }
       ]
     }
   }

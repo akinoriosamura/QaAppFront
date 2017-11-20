@@ -40,7 +40,7 @@ export default{
     }
   },
   mounted(){
-    axios.get("http://rocky-scrubland-17659.herokuapp.com/questions")
+    axios.get("https://qa-app-server.herokuapp.com/v1/posts")
     .then(response =>{
       Vue.set(this,'result',response.data)
       this.$emit('refresh')

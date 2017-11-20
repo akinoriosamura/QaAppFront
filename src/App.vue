@@ -9,6 +9,7 @@
           </v-ons-toolbar-button>
         </div>
       </v-ons-toolbar>
+
       <div style="text-align: center; padding-top:10px">Hello World!</div>
       <v-ons-tabbar swipeable position="auto"
         :tabs="tabs"
@@ -20,9 +21,10 @@
 </template>
 <script>
   import HomePage from './pages/HomePage.vue'
-  import Category from './pages/Category.vue'
-  import MyQA     from './pages/MyQA.vue'
-  import Register from './pages/Register.vue'
+  // import Category from './pages/Category.vue'
+  // import MyQA     from './pages/MyQA.vue'
+  // import Register from './pages/Register.vue'
+
   export default{
     data() {
       return {
@@ -32,7 +34,8 @@
             icon: 'md-home',
             page: HomePage,
             label: 'ホーム'
-          },
+          }
+          /*
           {
             icon: 'md-view-column',
             page: Category,
@@ -48,13 +51,14 @@
             page: Register,
             label: '登録'
           }
+          */
         ]
       };
     },
     computed: {
       title() {
         return this.tabs[this.activeIndex].label; 
-      } 
+      }
     }
   };
 </script>
