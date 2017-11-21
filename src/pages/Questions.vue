@@ -1,12 +1,12 @@
 <template>
   <v-ons-page>
-    <v-ons-list>
+    <v-ons-list tappable>
       <v-ons-lazy-repeat
         :render-item="renderItem"
         :length="100"
       >
       </v-ons-lazy-repeat>
-    </v-ons-list> 
+    </v-ons-list>
   </v-ons-page>
 </template>
 
@@ -34,7 +34,7 @@ export default {
         data() {
           return {
             index: i,
-            hihihi: content 
+            hihihi: content
           };
         }
       });
