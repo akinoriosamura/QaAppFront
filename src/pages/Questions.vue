@@ -6,7 +6,7 @@
         :length="100"
       >
       </v-ons-lazy-repeat>
-    </v-ons-list> 
+    </v-ons-list>
   </v-ons-page>
 </template>
 
@@ -34,16 +34,16 @@ export default {
         data() {
           return {
             index: i,
-            hihihi: content 
+            hihihi: content
           };
         }
       });
     }
   },
   mounted() {
-    axios.get(process.env.API_DOMAIN_URL + "questions")
+    axios.get("http://localhost:3000/v1/posts")
     .then(response => {
-      Vue.set(this, 'results', response.data)
+      Vue.set(this, 'results', response.data["posts"])
       this.$emit('refresh')
     })
   }
