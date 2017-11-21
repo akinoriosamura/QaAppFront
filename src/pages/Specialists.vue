@@ -9,7 +9,7 @@
    @changestate="state = $event.state"
  >
 
-   <!-- Show this on iOS -->
+   <!--iOS向け -->
    <v-ons-icon v-if="!md"
      size="22px"
      class="pull-hook-spinner"
@@ -18,7 +18,6 @@
      :spin="state === 'action'"
    ></v-ons-icon>
 
-   <!-- Show this on Material Design -->
    <div v-else class="pull-hook-progress">
      <v-ons-progress-circular
        :value="ratio * 100"
