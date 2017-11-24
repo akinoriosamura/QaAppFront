@@ -1,6 +1,5 @@
 <template>
   <v-ons-page>
-    <v-ons>
   </v-ons-page>
 </template>
 
