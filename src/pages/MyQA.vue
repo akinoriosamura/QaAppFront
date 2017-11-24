@@ -1,6 +1,6 @@
 <template>
   <v-ons-page>
-    <div>おさむらうんこページ</div>
+    <v-ons>
   </v-ons-page>
 </template>
 

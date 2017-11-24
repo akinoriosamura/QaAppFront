@@ -19,12 +19,12 @@ export default{
     return{
       items:[
         {
-          title:'nka',
-          subtitle:'alli'
+          title:'中條裕章',
+          subtitle:'社畜'
         },
         {
-          title:'jiji',
-          subtitle:'hhhh'
+          title:'納村あきのり',
+          subtitle:'フリーランス・人工知能エンジニア。専門は自然言語処理'
         }
       ]
     };
