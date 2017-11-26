@@ -39,6 +39,7 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
+import Questions_detail from './Questions_detail.vue';
 export default {
   data() {
     return {
@@ -53,7 +54,7 @@ export default {
       }
       return new Vue({
         template: `
-          <v-ons-list-item :key="index">
+          <v-ons-list-item :key="index" @click="push">
             Item #{{ hihihi }}
           </v-ons-list-item>
         `,
@@ -66,6 +67,11 @@ export default {
       });
     }
   },
+  methods: {
+          push() {
+            Event.$emit('push-page', Questions_detail);
+          }
+        },
   mounted() {
     axios.get(process.env.API_DOMAIN_URL + "questions")
     .then(response => {
