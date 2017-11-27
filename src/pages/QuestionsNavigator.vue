@@ -11,7 +11,6 @@
 
 <script>
 import Questions from './Questions.vue';
-
 export default {
   data() {
     return {

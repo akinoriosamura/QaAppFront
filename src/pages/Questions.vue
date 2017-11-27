@@ -1,36 +1,36 @@
-<template>
+<template id="Questions">
   <v-ons-page>
     <v-ons-pull-hook
- :action="onAction"
- :fixed-content="md"
- :height="md ? 84 : 64"
- :on-pull="md && onPull || null"
- @changestate="state = $event.state"
->
-<!--iOS向け -->
-<v-ons-icon v-if="!md"
-  size="22px"
-  class="pull-hook-spinner"
-  :icon="state === 'action' ? 'fa-spinner' : 'fa-arrow-down'"
-  :rotate="state === 'preaction' && 180"
-  :spin="state === 'action'"
-></v-ons-icon>
+      :action="onAction"
+      :fixed-content="md"
+      :height="md ? 84 : 64"
+      :on-pull="md && onPull || null"
+      @changestate="state = $event.state">
 
-<div v-else class="pull-hook-progress">
-  <v-ons-progress-circular
-    :value="ratio * 100"
-    :indeterminate="state === 'action'"
-    :style="{ transform: `rotate(${ratio}turn)` }"
-  ></v-ons-progress-circular>
-</div>
+      <!--iOS向け -->
+      <v-ons-icon v-if="!md"
+        size="22px"
+        class="pull-hook-spinner"
+        :icon="state === 'action' ? 'fa-spinner' : 'fa-arrow-down'"
+        :rotate="state === 'preaction' && 180"
+        :spin="state === 'action'">
+      </v-ons-icon>
 
-</v-ons-pull-hook>
+      <div v-else class="pull-hook-progress">
+        <v-ons-progress-circular
+        :value="ratio * 100"
+        :indeterminate="state === 'action'"
+        :style="{ transform: `rotate(${ratio}turn)` }">
+
+        </v-ons-progress-circular>
+      </div>
+
+    </v-ons-pull-hook>
 
     <v-ons-list>
       <v-ons-lazy-repeat
         :render-item="renderItem"
-        :length="100"
-      >
+        :length="100">
       </v-ons-lazy-repeat>
     </v-ons-list>
   </v-ons-page>
@@ -49,29 +49,40 @@ export default {
   methods: {
     renderItem(i) {
       var content = 'None'
+      var id = 'None'
       if (this.results.length > i) {
+        id = this.results[i].id
         content = this.results[i].content
       }
+
       return new Vue({
         template: `
           <v-ons-list-item :key="index" @click="push">
-            Item #{{ hihihi }}
+              Item({{ id }}) #{{ hihihi }}
           </v-ons-list-item>
         `,
         data() {
           return {
             index: i,
+            id: id,
             hihihi: content
           };
+        },
+        methods: {
+          push() {
+            Event.$emit('push-page', {
+              extends: Questions_detail,
+              data() {
+                return {
+                  questionid:id
+                }
+              }
+            });
+          }
         }
       });
     }
   },
-  methods: {
-          push() {
-            Event.$emit('push-page', Questions_detail);
-          }
-        },
   mounted() {
     axios.get(process.env.API_DOMAIN_URL + "questions")
     .then(response => {

@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Questions from './Questions.vue'
+import Questions from './QuestionsNavigator.vue'
 import Specialists from './Specialists.vue'
 
 export default {

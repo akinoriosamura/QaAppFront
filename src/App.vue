@@ -1,4 +1,4 @@
-<template>
+<template id="main">
     <v-ons-page>
       <v-ons-toolbar>
         <div class="center">{{ title }}</div>
@@ -7,7 +7,7 @@
             <v-ons-icon icon="md-menu"></v-ons-icon>
           </v-ons-toolbar-button>
           <v-ons-button v-if="name == null" @click="login">
-            <v-ons-icon icon="md-facebook"></v-ons-icon>
+            <v-ons-icon icon="md-facebook"></v-ons-icon> 
           </v-ons-button>
           {{ name }}
         </div>
@@ -19,6 +19,7 @@
         :index.sync="activeIndex"
       >
       </v-ons-tabbar>
+
     </v-ons-page>
 </template>
 <script>
@@ -26,7 +27,6 @@
   import Category from './pages/Category.vue'
   import MyQA     from './pages/MyQA.vue'
   import Register from './pages/Register.vue'
-
   export default{
     data() {
       return {
@@ -36,22 +36,26 @@
           {
             icon: 'md-home',
             page: HomePage,
-            label: 'ホーム'
+            label: 'ホーム',
+            key: "homePage"
           },
           {
             icon: 'md-view-column',
             page: Category,
-            label: 'カテゴリ'
+            label: 'カテゴリ',
+            key: "categoryPage"
           },
           {
             icon: 'md-comment-list',
             page: MyQA,
-            label: 'My Q&A'
+            label: 'My Q&A',
+            key: "myqaPage"
           },
           {
             icon: 'md-account',
             page: Register,
-            label: 'プロフィール'
+            label: '登録',
+            key: "registerPage"
           }
         ]
       };
@@ -59,14 +63,13 @@
     methods: {
       login() {
         var ref = window.open(process.env.API_DOMAIN_URL + 'auth/facebook?auth_origin_url=' + process.env.FRONT_DOMAIN_URL + '&omniauth_window_type=newWindow', "_blank", "location=yes");
-
         var messanger = setInterval(function() {
           var message = 'requestCredentials';
           ref.postMessage(message, process.env.API_DOMAIN_URL);
         }, 500);
       },
       afterLogin(rec) {
-        this.userName = rec.data['name'];
+        this.userName = rec.data['name']; 
       }
     },
     created() {
@@ -77,7 +80,7 @@
     },
     computed: {
       title() {
-        return this.tabs[this.activeIndex].label;
+        return this.tabs[this.activeIndex].label; 
       },
       name() {
         return this.userName;
