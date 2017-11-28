@@ -1,6 +1,6 @@
 <template id="Spe_Profile">
   <v-ons-page>
-    v-ons-toolbar>
+    <v-ons-toolbar>
       <div class="left">
         <v-ons-back-button>専門家一覧</v-ons-back-button>
       </div>

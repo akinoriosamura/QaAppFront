@@ -10,8 +10,7 @@
 </template>
 
 <script>
-import Questions from './QuestionsNavigator.vue'
-import Specialists from './Specialists.vue'
+import QuestionsNavigator from './QuestionsNavigator.vue'
 import SpecialistsNavigator from'./SpecialistsNavigator.vue'
 
 export default {
@@ -21,11 +20,11 @@ export default {
       tabs: [
         {
           label: '質問',
-          page: Questions
+          page: QuestionsNavigator
         },
         {
           label: '専門家',
-          page: Specialists
+          page: SpecialistsNavigator
         }
       ]
     }

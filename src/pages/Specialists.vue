@@ -16,6 +16,7 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
+import Spe_Profile from './Spe_Profile.vue';
 export default{
   data(){
     return{
@@ -25,20 +26,21 @@ export default{
   methods: {
     renderItem(i) {
       var name = 'None'
+      var id = 'None'
       if (this.results.length > i) {
         name = this.results[i].name
         title = this.results[i].title
       }
       return new Vue({
         template: `
-        <v-ons-list-item :key="index">
-        <div class="left">
-        <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
-        </div>
-        <div class="center">
-        <span class="list-item__title">{{ name }}</span>
-        <span class="list-item__subtitle">{{title}}</span>
-        </div>
+        <v-ons-list-item :key="index" @click="push">
+          <div class="left">
+            <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
+          </div>
+          <div class="center">
+            <span class="list-item__title">{{ name }}</span>
+            <span class="list-item__subtitle">{{title}}</span>
+          </div>
         </v-ons-list-item>
         `,
         data() {
@@ -47,6 +49,18 @@ export default{
             name: name,
             title: title,
           };
+        },
+        methods: {
+          push() {
+            Event.$emit('push-page', {
+              extends: Spe_Profile,
+              data() {
+                return {
+                  questionid:id
+                }
+              }
+            });
+          }
         }
       });
     }
