@@ -1,4 +1,4 @@
-<template>
+<template id="Spe_Profile">
   <v-ons-page>
     v-ons-toolbar>
       <div class="left">
@@ -6,7 +6,7 @@
       </div>
       <div class="center">専門家</div>
     </v-ons-toolbar>
-        <v-ons-card style="height:100%">
+        <v-ons-card style="height:100%;text-align:center;">
           <img src="https://monaca.io/img/logos/download_image_onsenui_01.png" alt="Onsen UI" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
           <div class="title" style="text-align=center center">
             テスト{{SpecialistName}}
@@ -19,7 +19,7 @@
               <v-ons-list-item>あああああああああああああ</v-ons-list-item>
               <div class="bottom">
               <v-ons-list-header style="font-weight:bold">最低価格　500円</v-ons-list-header>
-              <v-ons-button modifier="large" style="margin: 6px 0">質問する</v-ons-button>
+              <v-ons-button modifier="large" style="margin: 6px 0">この専門家に質問</v-ons-button>
             </div>
             </v-ons-list>
           </div>
@@ -31,5 +31,6 @@
 
 <script>
 export default {
+  
 }
 </script>

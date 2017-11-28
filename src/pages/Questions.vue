@@ -30,7 +30,7 @@
     <v-ons-list>
       <v-ons-lazy-repeat
         :render-item="renderItem"
-        :length="100">
+        :length="100" tappable>
       </v-ons-lazy-repeat>
     </v-ons-list>
   </v-ons-page>

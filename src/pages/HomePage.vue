@@ -12,6 +12,7 @@
 <script>
 import Questions from './QuestionsNavigator.vue'
 import Specialists from './Specialists.vue'
+import SpecialistsNavigator from'./SpecialistsNavigator.vue'
 
 export default {
   data() {
