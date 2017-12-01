@@ -6,10 +6,12 @@
           <v-ons-toolbar-button>
             <v-ons-icon icon="md-menu"></v-ons-icon>
           </v-ons-toolbar-button>
-          <v-ons-button v-if="name == null" @click="login">
-            <v-ons-icon icon="md-facebook"></v-ons-icon> 
+          <v-ons-button v-if="userName == ''" @click="login">
+            <v-ons-icon icon="md-facebook"></v-ons-icon>
           </v-ons-button>
-          {{ name }}
+          <v-ons-button v-else @click="logout">
+            {{ userName }}
+          </v-ons-button>
         </div>
       </v-ons-toolbar>
 
@@ -27,6 +29,8 @@
   import Category from './pages/Category.vue'
   import MyQA     from './pages/MyQA.vue'
   import Register from './pages/Register.vue'
+  import VueCookie from 'cookie-in-vue'
+
   export default{
     data() {
       return {
@@ -63,27 +67,40 @@
     methods: {
       login() {
         var ref = window.open(process.env.API_DOMAIN_URL + 'auth/facebook?auth_origin_url=' + process.env.FRONT_DOMAIN_URL + '&omniauth_window_type=newWindow', "_blank", "location=yes");
+
         var messanger = setInterval(function() {
           var message = 'requestCredentials';
           ref.postMessage(message, process.env.API_DOMAIN_URL);
         }, 500);
       },
-      afterLogin(rec) {
-        this.userName = rec.data['name']; 
-      }
+      receiveMessage(rec) {
+        if (rec.data != '') {
+          if (rec.data['type'] == 'login') {
+            this.userName = rec.data['data']['name'];
+            VueCookie.set('access-token', rec.data['data']['auth_token']);
+            VueCookie.set('client', rec.data['data']['client_id']);
+            VueCookie.set('uid', rec.data['data']['uid']);
+            this.$store.commit('set', true);
+          }
+        }
+      },
+      logout() {
+        VueCookie.remove('access-token');
+        VueCookie.remove('client');
+        VueCookie.remove('uid');
+        this.userName = '';
+        this.$store.commit('set', false);
+      },
     },
     created() {
-      window.addEventListener('message', this.afterLogin);
+      window.addEventListener('message', this.receiveMessage, false);
     },
     destroyed() {
-      window.removeEventListener('message', this.afterLogin);
+      window.removeEventListener('message', this.receiveMessage);
     },
     computed: {
       title() {
-        return this.tabs[this.activeIndex].label; 
-      },
-      name() {
-        return this.userName;
+        return this.tabs[this.activeIndex].label;
       }
     }
   };
