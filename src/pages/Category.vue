@@ -19,7 +19,7 @@
               <v-ons-list-item>あああああああああああああ</v-ons-list-item>
               <div class="bottom">
               <v-ons-list-header style="font-weight:bold">最低価格　500円</v-ons-list-header>
-              <v-ons-button modifier="large" style="margin: 6px 0">君に決めた！</v-ons-button>
+              <v-ons-button modifier="large" style="margin: 6px 0" @click="">君に決めた！</v-ons-button>
             </div>
             </v-ons-list>
           </div>

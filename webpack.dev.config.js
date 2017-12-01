@@ -116,7 +116,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         'API_DOMAIN_URL': JSON.stringify('http://localhost:3000/'),
-        'FRONT_DOMAIN_URL': JSON.stringify('http://ishii.test.com:8000/')
+        'FRONT_DOMAIN_URL': JSON.stringify('http://qa.dev.com:8000/')
       }
     })
   ],
