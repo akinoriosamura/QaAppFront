@@ -1,11 +1,9 @@
 <template>
   <v-ons-page>
-
     <v-ons-navigator swipeable
       :page-stack="pageStack"
     >
     </v-ons-navigator>
-
   </v-ons-page>
 </template>
 

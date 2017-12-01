@@ -12,8 +12,8 @@
             <span class="list-item__subtitle">{{user.title}}</span>
           </div>
         </v-ons-list-item>
-        </v-ons-list>
-      </div>
+      </v-ons-list>
+    </div>
   </v-ons-page>
 </template>
 
@@ -21,17 +21,18 @@
 import Vue from 'vue';
 import axios from 'axios';
 import Spe_Profile from './Spe_Profile.vue';
-  export default{
+export default{
     data(){
       return {
       users:[]
     };
-    },
+  },
   methods:{
     getUsers() {
-            var url = 'https://gist.githubusercontent.com/anonymous/c41ae1698aca3595b95d1496ebf42d83/raw/2addeb281bcb4aae2be9c8204c0ec623c4cb446c/characters.json';
+            var url = 'process.env.API_DOMAIN_URL + "v1/users"';
             axios.get(url)
-            .then(x => { this.users = x.data; });
+            .then(response => { this.users = response.data["users"]; });
+            alert(url);
         },
     push() {
              Event.$emit('push-page', {
