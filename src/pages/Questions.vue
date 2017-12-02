@@ -3,7 +3,7 @@
     <v-ons-list>
       <v-ons-lazy-repeat
         :render-item="renderItem"
-        :length="50">
+        :length="20">
       </v-ons-lazy-repeat>
     </v-ons-list>
   </v-ons-page>

@@ -1,52 +1,73 @@
 <template>
   <v-ons-page>
-    <div>
-      <!--リストアイテムで専門家が並ぶからプロフィールページから取得？-->
-      <v-ons-list>
-        <v-ons-list-item v-for="user in users" :key="index" @click="push" tappable>
-          <div class="left">
-            <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
-          </div>
-          <div class="center">
-            <span class="list-item__title">{{user.name}}</span>
-            <span class="list-item__subtitle">{{user.title}}</span>
-          </div>
-        </v-ons-list-item>
-      </v-ons-list>
-    </div>
+        <v-ons-list>
+      <v-ons-lazy-repeat
+        :render-item="renderItem"
+        :length="20">
+      </v-ons-lazy-repeat>
+    </v-ons-list>
   </v-ons-page>
 </template>
 
 <script>
 import Vue from 'vue';
+import VueCookie from 'cookie-in-vue';
 import axios from 'axios';
 import Spe_Profile from './Spe_Profile.vue';
+
 export default{
     data(){
       return {
-      users:[]
+      results:[]
     };
   },
-  methods:{
-    getUsers() {
-            var url = 'process.env.API_DOMAIN_URL + "v1/users"';
-            axios.get(url)
-            .then(response => { this.users = response.data["users"]; });
-            alert(url);
+  methods: {
+    renderItem(i) {
+      var name = 'None'
+      if (this.results.length > i) {
+        name = this.results[i].name
+      }
+      return new Vue({
+        template: `
+          <v-ons-list-item :key="index" @click="push">
+            Item #{{ name }}
+          </v-ons-list-item>
+        `,
+        data() {
+          return {
+            index: i,
+            name: name 
+          };
         },
-    push() {
-             Event.$emit('push-page', {
-               extends: Spe_Profile,
-               data() {
-                 return {
-                   specialistid:id
-                }
-               }
-             });
-           }
+        methods: {
+          push() {
+            Event.$emit('push-page', Spe_Profile);
+          }
+        }
+      });
+    },
+    listUser() {
+      axios.get(process.env.API_DOMAIN_URL + "v1/users", {
+        headers: {
+          'access-token': VueCookie.get('access-token'),
+          'client': VueCookie.get('client'),
+          'uid': VueCookie.get('uid')
+        }
+      })
+      .then(response => {
+        Vue.set(this, 'results', response.data["users"])
+        this.$emit('refresh')
+      })
+    }
   },
   mounted() {
-      this.getUsers();
+    this.$store.watch((state) => state.login, () => {
+      if (this.$store.state.login) {
+        this.listUser()
+      } else {
+        results = []
+      }
+    })
   }
 }
 </script>

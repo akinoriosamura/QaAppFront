@@ -15,7 +15,7 @@
         </div>
       </v-ons-toolbar>
 
-      <v-ons-tabbar swipeable position="auto"
+      <v-ons-tabbar swipeable position="bottom"
         :tabs="tabs"
         :visible="true"
         :index.sync="activeIndex"
@@ -25,11 +25,11 @@
     </v-ons-page>
 </template>
 <script>
-  import HomePage from './pages/HomePage.vue'
-  import Category from './pages/Category.vue'
+  import VueCookie from 'cookie-in-vue'
+  import Questions from './pages/QuestionsNavigator.vue'
+  import Specialists from './pages/SpecialistsNavigator.vue'
   import MyQA     from './pages/MyQA.vue'
   import Register from './pages/Register.vue'
-  import VueCookie from 'cookie-in-vue'
 
   export default{
     data() {
@@ -39,15 +39,15 @@
         tabs: [
           {
             icon: 'md-home',
-            page: HomePage,
-            label: 'ホーム',
-            key: "homePage"
+            page: Questions,
+            label: '質問',
+            key: "questionsPage"
           },
           {
             icon: 'md-view-column',
-            page: Category,
-            label: 'カテゴリ',
-            key: "categoryPage"
+            page: Specialists,
+            label: '専門家',
+            key: "specialistsPage"
           },
           {
             icon: 'md-comment-list',
