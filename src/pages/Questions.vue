@@ -1,4 +1,4 @@
-<template>
+<template id="Questions">
   <v-ons-page>
     <v-ons-list>
       <v-ons-lazy-repeat

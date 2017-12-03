@@ -1,11 +1,19 @@
-<template>
+<template id="Specialists">
   <v-ons-page>
-        <v-ons-list>
-      <v-ons-lazy-repeat
-        :render-item="renderItem"
-        :length="20">
-      </v-ons-lazy-repeat>
-    </v-ons-list>
+    <div>
+      <!--リストアイテムで専門家が並ぶからプロフィールページから取得？-->
+      <v-ons-list>
+        <v-ons-list-item v-for="result in results" :key="index" @click="push" tappable>
+          <div class="left">
+            <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
+          </div>
+          <div class="center">
+            <span class="list-item__title">{{result.name}}</span>
+            <span class="list-item__subtitle">{{result.email}}</span>
+          </div>
+        </v-ons-list-item>
+        </v-ons-list>
+      </div>
   </v-ons-page>
 </template>
 
@@ -16,37 +24,13 @@ import axios from 'axios';
 import Spe_Profile from './Spe_Profile.vue';
 
 export default{
-    data(){
-      return {
+  data(){
+    return {
       results:[]
     };
   },
   methods: {
-    renderItem(i) {
-      var name = 'None'
-      if (this.results.length > i) {
-        name = this.results[i].name
-      }
-      return new Vue({
-        template: `
-          <v-ons-list-item :key="index" @click="push">
-            Item #{{ name }}
-          </v-ons-list-item>
-        `,
-        data() {
-          return {
-            index: i,
-            name: name 
-          };
-        },
-        methods: {
-          push() {
-            Event.$emit('push-page', Spe_Profile);
-          }
-        }
-      });
-    },
-    listUser() {
+    getUsers() {
       axios.get(process.env.API_DOMAIN_URL + "v1/users", {
         headers: {
           'access-token': VueCookie.get('access-token'),
@@ -58,16 +42,27 @@ export default{
         Vue.set(this, 'results', response.data["users"])
         this.$emit('refresh')
       })
+    },
+    push() {
+      Event.$emit('push-page', {
+        extends: Spe_Profile,
+        data() {
+          return {
+            specialistid:id
+          }
+        }
+      });
     }
   },
   mounted() {
     this.$store.watch((state) => state.login, () => {
       if (this.$store.state.login) {
-        this.listUser()
+        this.getUsers()
       } else {
         results = []
       }
     })
+    this.getUsers()
   }
 }
 </script>
