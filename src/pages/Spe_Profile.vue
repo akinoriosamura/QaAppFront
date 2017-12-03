@@ -16,10 +16,10 @@
               <v-ons-list-header>経歴</v-ons-list-header>
               <v-ons-list-item>{{content}}</v-ons-list-item>
               <v-ons-list-header>対応範囲</v-ons-list-header>
-              <v-ons-list-item>{{}}</v-ons-list-item>
+              <v-ons-list-item></v-ons-list-item>
               <div class="bottom">
               <v-ons-list-header style="font-weight:bold">最低価格　500円</v-ons-list-header>
-              <v-ons-button modifier="large" style="margin: 6px 0">この専門家に質問</v-ons-button>
+              <v-ons-button modifier="large" @click="push" style="margin: 6px 0">この専門家に質問</v-ons-button>
             </div>
             </v-ons-list>
           </div>
@@ -28,10 +28,18 @@
 </template>
 
 <script>
+import Spe_QueContent from './Spe_QueContent.vue';
+
 export default {
   data() {
     return {
       specialistid: -1
+    }
+  },
+  method: {
+    push() {
+      Event.$emit('push-page',
+        Spe_QueContent);
     }
   },
   computed: {

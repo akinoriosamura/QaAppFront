@@ -1,7 +1,11 @@
 <template>
   <v-ons-page>
-<div>てすと</div>
-
+    <v-ons-toolbar>
+      <div class="left">
+        <v-ons-back-button>専門家詳細</v-ons-back-button>
+      </div>
+    </v-ons-toolbar>
+    <div>てすと</div>
   </v-ons-page>
 </template>
 
