@@ -1,11 +1,18 @@
-<template id="Questions">
+<template id="Specialists">
   <v-ons-page>
-    <v-ons-list>
-      <v-ons-lazy-repeat
-        :render-item="renderItem"
-        :length="100">
-      </v-ons-lazy-repeat>
-    </v-ons-list>
+    <div>
+      <!--リストアイテムで専門家が並ぶからプロフィールページから取得？-->
+      <v-ons-list>
+        <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id)" tappable>
+          <div class="left">
+            <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
+          </div>
+          <div class="center">
+            <span class="list-item__title">{{result.content}}</span>
+          </div>
+        </v-ons-list-item>
+      </v-ons-list>
+    </div>
   </v-ons-page>
 </template>
 
@@ -22,49 +29,7 @@ export default {
     };
   },
   methods: {
-    renderItem(i) {
-      var id = 'None'
-      var content = 'None'
-      if (this.results) {
-        id = this.results[i].id
-        content = this.results[i].content
-      }
-      return new Vue({
-        template: `
-          <v-ons-list-item :key="index">
-            <div class="left">
-              <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
-            </div>
-            <div>
-              {{ id }}: {{ content }}
-            </div>
-          </v-ons-list-item>
-        `,
-        data() {
-          return {
-            index: i,
-            id: id,
-            content: content
-          };
-        },
-        methods: {
-          push(id) {
-            this.$store.commit('navigator/push', {
-              extends: Questions_detail,
-              data() {
-                return {
-                  toolbarInfo: {
-                    backLabel: '質問',
-                    title: id
-                  }
-                }
-              }
-            });
-          }
-        }
-      });
-    },
-    listQuestion() {
+    getContents() {
       axios.get(process.env.API_DOMAIN_URL + "v1/posts", {
         headers: {
           'access-token': VueCookie.get('access-token'),
@@ -76,18 +41,31 @@ export default {
         Vue.set(this, 'results', response.data["posts"])
         this.$emit('refresh')
       })
+    },
+    push(key) {
+      this.$store.commit('navigator/push', {
+        extends: Questions_detail,
+        data() {
+          return {
+            toolbarInfo: {
+              backLabel: '質問一覧',
+              title: key
+            }
+          }
+        }
+      });
     }
   },
   // render直前に実行するproperty
-  created() {
+  mounted() {
     this.$store.watch((state) => state.login, () => {
       if (this.$store.state.login) {
-        this.listQuestion()
+        this.getContents()
       } else {
         results = []
       }
     })
-    this.results = this.listQuestion()
+    this.results = this.getContents()
   }
 }
 </script>

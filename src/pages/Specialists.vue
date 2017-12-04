@@ -3,7 +3,7 @@
     <div>
       <!--リストアイテムで専門家が並ぶからプロフィールページから取得？-->
       <v-ons-list>
-        <v-ons-list-item v-for="result in results" :key="id" @click="push(result.id)" tappable>
+        <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id)" tappable>
           <div class="left">
             <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
           </div>
@@ -12,8 +12,8 @@
             <span class="list-item__subtitle">{{result.email}}</span>
           </div>
         </v-ons-list-item>
-        </v-ons-list>
-      </div>
+      </v-ons-list>
+    </div>
   </v-ons-page>
 </template>
 

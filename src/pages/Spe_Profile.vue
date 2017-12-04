@@ -26,7 +26,7 @@
 import Spe_QueContent from './Spe_QueContent.vue';
 
 export default {
-  method: {
+  methods: {
     push() {
       this.$store.commit('navigator/push', {
         extends: Spe_QueContent,
