@@ -11,10 +11,10 @@
 
       <template slot="pages">
 
-        <v-ons-page :infinite-scroll="loadMore">
+        <v-ons-page>
           <v-ons-list>
-            <v-ons-list-item v-for="question in myquestions" :key="question" @click="push_Q" tappable>
-              Item #{{ question }}
+            <v-ons-list-item v-for="myquestion in myquestions" :key="myquestion.id" @click="push_Q(myquestion.id, myquestion.content)" tappable>
+              {{ myquestion.content }}
             </v-ons-list-item>
           </v-ons-list>
 
@@ -25,8 +25,8 @@
 
         <v-ons-page>
           <v-ons-list>
-            <v-ons-list-item v-for="answer in myanswers" :key="answer" @click="push_A" tappable>
-              Item #{{ answer }}
+            <v-ons-list-item v-for="myanswer in myanswers" :key="myanswer.id" @click="push_A(myanswer.id, myanswer.content)" tappable>
+              {{ myanswer.content }}
             </v-ons-list-item>
           </v-ons-list>
         </v-ons-page>
@@ -38,8 +38,10 @@
 
 <script>
 import Vue from 'vue';
-import MyQA_Q from './MyQA_Q.vue'
-import MyQA_A from './MyQA_A.vue'
+import VueCookie from 'cookie-in-vue';
+import axios from 'axios';
+import MyQA_Q from './MyQA_Q.vue';
+import MyQA_A from './MyQA_A.vue';
 
 export default {
   data() {
@@ -48,26 +50,42 @@ export default {
       myanswers: []
     };
   },
-  beforeMount() {
-    for (let i = 0; i < 30; i++) {
-      this.myquestions.push(i);
-      this.myanswers.push(i);
-    }
-  },
   methods: {
-    loadMore(done) {
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + i);
+    getMyquestions() {
+      axios.get(process.env.API_DOMAIN_URL + "v1/posts", {
+        headers: {
+          'access-token': VueCookie.get('access-token'),
+          'client': VueCookie.get('client'),
+          'uid': VueCookie.get('uid')
         }
-        done();
-      }, 600)
+      })
+      .then(response => {
+        Vue.set(this, 'myquestions', response.data["posts"])
+        this.$emit('refresh')
+      })
     },
-    push_Q() {
+    getMyanswers() {
+      axios.get(process.env.API_DOMAIN_URL + "v1/posts", {
+        headers: {
+          'access-token': VueCookie.get('access-token'),
+          'client': VueCookie.get('client'),
+          'uid': VueCookie.get('uid')
+        }
+      })
+      .then(response => {
+        Vue.set(this, 'myanswers', response.data["posts"])
+        this.$emit('refresh')
+      })
+    },
+    push_Q(post_id, content) {
       this.$store.commit('navigator/push', {
         extends: MyQA_Q,
         data() {
           return {
+            // Questions_detailへの継承データ
+            post_id: post_id,
+            content: content,
+            // toolbarへの継承データ
             toolbarInfo: {
               backLabel: 'My Q&A',
               title: 'My Question'
@@ -76,11 +94,15 @@ export default {
         }
       });
     },
-    push_A() {
+    push_A(post_id, content) {
       this.$store.commit('navigator/push', {
         extends: MyQA_A,
         data() {
           return {
+            // Questions_detailへの継承データ
+            post_id: post_id,
+            content: content,
+            // toolbarへの継承データ
             toolbarInfo: {
               backLabel: 'My Q&A',
               title: 'My Answer'
@@ -89,6 +111,18 @@ export default {
         }
       });
     }
+  },
+  mounted() {
+    this.$store.watch((state) => state.login, () => {
+      if (this.$store.state.login) {
+        this.getMyquestions()
+        this.getMyanswers()
+      } else {
+        results = []
+      }
+    })
+    this.getMyquestions()
+    this.getMyanswers()
   }
 };
 </script>

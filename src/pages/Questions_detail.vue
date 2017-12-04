@@ -3,16 +3,16 @@
     <custom-toolbar v-bind="toolbarInfo"></custom-toolbar>
 
       <v-ons-card>
-          <div class="title"> Question </div>
+          <div class="title"> 質問 </div>
           <div class="content">{{ content }}</div>
       </v-ons-card>
 
       <v-ons-card v-if="results.content">
-          <div class="title"> Answer </div>
+          <div class="title"> 回答 </div>
           <div class="content">{{ results.content }}</div>
       </v-ons-card>
       <v-ons-card v-else>
-          <div class="title"> Answer </div>
+          <div class="title"> 回答 </div>
           <div class="content">{{ answer }}</div>
       </v-ons-card>
   </v-ons-page>
