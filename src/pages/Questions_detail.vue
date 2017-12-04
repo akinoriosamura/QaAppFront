@@ -1,14 +1,7 @@
 <template>
   <v-ons-page>
-    <v-ons-toolbar>
-      <div class="left">
-        <v-ons-back-button>質問一覧</v-ons-back-button>
-      </div>
-      <div class="center">
-        質問詳細(ID = {{ questionid }})
-      </div>
-    </v-ons-toolbar>
-    <v-ons-card v-for="page of pages">
+    <custom-toolbar v-bind="toolbarInfo"></custom-toolbar>
+    <v-ons-card v-for="page of pages" :key="label">
       <div class="title">{{ page.label }}</div>
       <div class="content">{{ page.desc }}</div>
     </v-ons-card>

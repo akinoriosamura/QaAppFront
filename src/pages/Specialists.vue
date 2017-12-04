@@ -3,7 +3,7 @@
     <div>
       <!--リストアイテムで専門家が並ぶからプロフィールページから取得？-->
       <v-ons-list>
-        <v-ons-list-item v-for="result in results" :key="index" @click="push" tappable>
+        <v-ons-list-item v-for="result in results" :key="id" @click="push(result.id)" tappable>
           <div class="left">
             <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
           </div>
@@ -43,12 +43,15 @@ export default{
         this.$emit('refresh')
       })
     },
-    push() {
-      Event.$emit('push-page', {
+    push(key) {
+      this.$store.commit('navigator/push', {
         extends: Spe_Profile,
         data() {
           return {
-            specialistid:id
+            toolbarInfo: {
+              backLabel: '専門家一覧',
+              title: key
+            }
           }
         }
       });
@@ -57,12 +60,12 @@ export default{
   mounted() {
     this.$store.watch((state) => state.login, () => {
       if (this.$store.state.login) {
-        this.getUsers()
+        this.getUsers();
       } else {
         results = []
       }
     })
-    this.getUsers()
+    this.getUsers();
   }
 }
 </script>

@@ -3,7 +3,7 @@
     <v-ons-list>
       <v-ons-lazy-repeat
         :render-item="renderItem"
-        :length="20">
+        :length="100">
       </v-ons-lazy-repeat>
     </v-ons-list>
   </v-ons-page>
@@ -23,25 +23,43 @@ export default {
   },
   methods: {
     renderItem(i) {
+      var id = 'None'
       var content = 'None'
-      if (this.results.length > i) {
+      if (this.results) {
+        id = this.results[i].id
         content = this.results[i].content
       }
       return new Vue({
         template: `
-          <v-ons-list-item :key="index" @click="push">
-            Item #{{ content }}
+          <v-ons-list-item :key="index">
+            <div class="left">
+              <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
+            </div>
+            <div>
+              {{ id }}: {{ content }}
+            </div>
           </v-ons-list-item>
         `,
         data() {
           return {
             index: i,
-            content: content 
+            id: id,
+            content: content
           };
         },
         methods: {
-          push() {
-            Event.$emit('push-page', Questions_detail);
+          push(id) {
+            this.$store.commit('navigator/push', {
+              extends: Questions_detail,
+              data() {
+                return {
+                  toolbarInfo: {
+                    backLabel: '質問',
+                    title: id
+                  }
+                }
+              }
+            });
           }
         }
       });
@@ -60,7 +78,8 @@ export default {
       })
     }
   },
-  mounted() {
+  // render直前に実行するproperty
+  created() {
     this.$store.watch((state) => state.login, () => {
       if (this.$store.state.login) {
         this.listQuestion()
@@ -68,6 +87,7 @@ export default {
         results = []
       }
     })
+    this.results = this.listQuestion()
   }
 }
 </script>

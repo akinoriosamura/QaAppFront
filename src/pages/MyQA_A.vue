@@ -1,12 +1,45 @@
 <template>
-<v-ons-page>
-  <p>回答</p>
-</v-ons-page>
+  <v-ons-page>
+    <custom-toolbar v-bind="toolbarInfo"></custom-toolbar>
+    <v-ons-card v-for="page of pages" :key="label">
+      <div class="title">{{ page.label }}</div>
+      <div class="content">{{ page.desc }}</div>
+    </v-ons-card>
+  </v-ons-page>
 </template>
 
-
 <script>
-export default{
-
+export default {
+  data() {
+    return {
+      pages: [
+        {
+          label: 'Question',
+          desc: 'from my answer'
+        },
+        {
+          label: 'Answer',
+          desc: '吉野家一択です。'
+        }
+      ],
+      questionid: -1
+    }
+  },
+  computed: {
+    ComputedId() {
+      return this.questionid
+    }
+  }
 }
 </script>
+
+<style>
+ons-card {
+  cursor: pointer;
+  color: #333;
+}
+
+.card__title, .card--material__title {
+  font-size: 20px;
+}
+</style>

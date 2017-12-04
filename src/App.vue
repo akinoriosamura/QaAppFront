@@ -1,107 +1,117 @@
-<template id="main">
-    <v-ons-page>
-      <v-ons-toolbar>
-        <div class="center">{{ title }}</div>
-        <div class="right">
-          <v-ons-toolbar-button>
-            <v-ons-icon icon="md-menu"></v-ons-icon>
-          </v-ons-toolbar-button>
-          <v-ons-button v-if="userName == ''" @click="login">
-            <v-ons-icon icon="md-facebook"></v-ons-icon>
-          </v-ons-button>
-          <v-ons-button v-else @click="logout">
-            {{ userName }}
-          </v-ons-button>
-        </div>
-      </v-ons-toolbar>
+<template>
+  <v-ons-page :style="swipePosition">
+    <custom-toolbar :style="swipeTheme" modifier="white-content">
+      {{ title }}
+    </custom-toolbar>
 
-      <v-ons-tabbar swipeable position="bottom"
-        :tabs="tabs"
-        :visible="true"
-        :index.sync="activeIndex"
-      >
-      </v-ons-tabbar>
-
-    </v-ons-page>
+    <v-ons-tabbar position="auto"
+      swipeable
+      :modifier="md ? 'autogrow white-content' : null"
+      :on-swipe="md ? onSwipe : null"
+      :tabbar-style="swipeTheme"
+      :tabs="tabs"
+      :index.sync="index"
+    ></v-ons-tabbar>
+  </v-ons-page>
 </template>
+
 <script>
   import VueCookie from 'cookie-in-vue'
-  import Questions from './pages/QuestionsNavigator.vue'
-  import Specialists from './pages/SpecialistsNavigator.vue'
+  import Questions from './pages/Questions.vue'
+  import Specialists from './pages/Specialists.vue'
   import MyQA     from './pages/MyQA.vue'
   import Register from './pages/Register.vue'
-
-  export default{
-    data() {
-      return {
-        activeIndex: 0,
-        userName: '',
-        tabs: [
-          {
-            icon: 'md-home',
-            page: Questions,
-            label: '質問',
-            key: "questionsPage"
-          },
-          {
-            icon: 'md-view-column',
-            page: Specialists,
-            label: '専門家',
-            key: "specialistsPage"
-          },
-          {
-            icon: 'md-comment-list',
-            page: MyQA,
-            label: 'My Q&A',
-            key: "myqaPage"
-          },
-          {
-            icon: 'md-account',
-            page: Register,
-            label: '登録',
-            key: "registerPage"
-          }
-        ]
-      };
-    },
-    methods: {
-      login() {
-        var ref = window.open(process.env.API_DOMAIN_URL + 'auth/facebook?auth_origin_url=' + process.env.FRONT_DOMAIN_URL + '&omniauth_window_type=newWindow', "_blank", "location=yes");
-
-        var messanger = setInterval(function() {
-          var message = 'requestCredentials';
-          ref.postMessage(message, process.env.API_DOMAIN_URL);
-        }, 500);
-      },
-      receiveMessage(rec) {
-        if (rec.data != '') {
-          if (rec.data['type'] == 'login') {
-            this.userName = rec.data['data']['name'];
-            VueCookie.set('access-token', rec.data['data']['auth_token']);
-            VueCookie.set('client', rec.data['data']['client_id']);
-            VueCookie.set('uid', rec.data['data']['uid']);
-            this.$store.commit('set', true);
-          }
+// Just a linear interpolation formula
+const lerp = (x0, x1, t) => parseInt((1 - t) * x0 + t * x1, 10);
+// RGB colors
+const red = [244, 67, 54];
+const blue = [30, 136, 229];
+const purple = [103, 58, 183];
+export default {
+  data () {
+    return {
+      colors: red,
+      animationOptions: {},
+      topPosition: 0,
+      tabs: [
+        {
+          label: this.md ? null : '質問',
+          icon: 'md-home',
+          page: Questions,
+          theme: red,
+          style: this.md ? { maxWidth: '60px' } : {},
+          top: -105 // Toolbar + Tabbar heights
+        },
+        {
+          label: '専門家',
+          icon: this.md ? null : 'md-view-column',
+          page: Specialists,
+          theme: red
+        },
+        {
+          label: 'My Q&A',
+          icon: this.md ? null : 'md-comment-list',
+          page: MyQA,
+          theme: blue
+        },
+        {
+          label: '登録',
+          icon: this.md ? null : 'md-account',
+          page: Register,
+          theme: purple
         }
+      ]
+    };
+  },
+  methods: {
+    onSwipe(index, animationOptions) {
+      // Apply the same transition as ons-tabbar
+      this.animationOptions = animationOptions;
+      // Interpolate colors and top position
+      const a = Math.floor(index), b = Math.ceil(index), ratio = index % 1;
+      this.colors = this.colors.map((c, i) => lerp(this.tabs[a].theme[i], this.tabs[b].theme[i], ratio));
+      this.topPosition = lerp(this.tabs[a].top || 0, this.tabs[b].top || 0, ratio);
+    }
+  },
+  computed: {
+    index: {
+      get() {
+        return this.$store.state.tabbar.index;
       },
-      logout() {
-        VueCookie.remove('access-token');
-        VueCookie.remove('client');
-        VueCookie.remove('uid');
-        this.userName = '';
-        this.$store.commit('set', false);
-      },
+      set(newValue) {
+        this.$store.commit('tabbar/set', newValue)
+      }
     },
-    created() {
-      window.addEventListener('message', this.receiveMessage, false);
+    title() {
+      return this.md ? 'Onsen UI' : this.tabs[this.index].title || this.tabs[this.index].label;
     },
-    destroyed() {
-      window.removeEventListener('message', this.receiveMessage);
+    swipeTheme() {
+      return this.md && {
+        backgroundColor: `rgb(${this.colors.join(',')})`,
+        transition: `all ${this.animationOptions.duration || 0}s ${this.animationOptions.timing || ''}`
+      }
     },
-    computed: {
-      title() {
-        return this.tabs[this.activeIndex].label;
+    swipePosition() {
+      return this.md && {
+        top: this.topPosition + 'px',
+        transition: `all ${this.animationOptions.duration || 0}s ${this.animationOptions.timing || ''}`
       }
     }
-  };
+  }
+};
 </script>
+
+<style>
+/* Custom 'white-content' modifier */
+.page--material .toolbar--white-content__center,
+.page--material .toolbar-button--white-content,
+.page--material :checked + .tabbar--white-content__button {
+  color: white;
+}
+.page--material .tabbar--white-content__button {
+  color: rgba(255, 255, 255, 0.7);
+}
+.page--material .tabbar--white-content__border {
+  background-color: white;
+}
+</style>
