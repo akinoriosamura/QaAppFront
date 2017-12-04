@@ -3,13 +3,13 @@
     <div>
       <!--リストアイテムで専門家が並ぶからプロフィールページから取得？-->
       <v-ons-list>
-        <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id)" tappable>
+        <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id, result.name, result.image, result.document, result.l_price)" tappable>
           <div class="left">
             <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
           </div>
           <div class="center">
             <span class="list-item__title">{{result.name}}</span>
-            <span class="list-item__subtitle">{{result.email}}</span>
+            <span class="list-item__subtitle">{{ result.email }}</span>
           </div>
         </v-ons-list-item>
       </v-ons-list>
@@ -43,14 +43,21 @@ export default{
         this.$emit('refresh')
       })
     },
-    push(key) {
+    push(id, name, image, document, l_price) {
       this.$store.commit('navigator/push', {
         extends: Spe_Profile,
         data() {
           return {
+            // Spe_Profileへの継承データ
+            specialist_id: id,
+            name: name,
+            image: image,
+            document: document,
+            l_price: l_price,
+            // toolbarへの継承データ
             toolbarInfo: {
               backLabel: '専門家一覧',
-              title: key
+              title: "専門家詳細"
             }
           }
         }

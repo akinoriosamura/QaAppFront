@@ -15,7 +15,8 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      content: ''
+      specialist_id: '',
+      content: 'None'
     };
   },
   methods: {
