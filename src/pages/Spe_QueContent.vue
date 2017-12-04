@@ -24,7 +24,7 @@ export default {
       if (!content) {
         alert('質問を入力してください。')
       } else {
-        const data = { user_id: 1, content: content}
+        const data = { user_id: VueCookie.get('id'), content: content}
         console.log(data);
         axios.post(process.env.API_DOMAIN_URL + "v1/posts", data, {
               headers: {

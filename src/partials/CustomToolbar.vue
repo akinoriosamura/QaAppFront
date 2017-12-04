@@ -26,7 +26,8 @@
     props: ['title', 'backLabel'],
     data() {
       return {
-        userName: ''
+        userName: '',
+        results: []
       };
     },
     methods: {
@@ -46,6 +47,7 @@
             VueCookie.set('client', rec.data['data']['client_id']);
             VueCookie.set('uid', rec.data['data']['uid']);
             VueCookie.set('name', rec.data['data']['name']);
+            VueCookie.set('id', rec.data['data']['id']);
             this.$store.commit('set', true);
           }
         }
@@ -54,6 +56,8 @@
         VueCookie.remove('access-token');
         VueCookie.remove('client');
         VueCookie.remove('uid');
+        VueCookie.remove('name');
+        VueCookie.remove('id');
         this.userName = '';
         this.$store.commit('set', false);
       }

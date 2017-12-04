@@ -53,7 +53,7 @@ export default {
       if (!answer) {
         alert('回答を入力してください。')
       } else {
-        const data = { user_id: 1, content: answer, post_id: post_id, pv: 0}
+        const data = { user_id: VueCookie.get('id'), content: answer, post_id: post_id, pv: 0}
         console.log(data);
         axios.post(process.env.API_DOMAIN_URL + "v1/comments", data, {
               headers: {

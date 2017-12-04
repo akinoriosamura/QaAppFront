@@ -7,7 +7,7 @@
           <div class="content">{{ content }}</div>
       </v-ons-card>
 
-      <v-ons-card v-if="results.content">
+      <v-ons-card v-if="results">
           <div class="title"> 回答 </div>
           <div class="content">{{ results.content }}</div>
       </v-ons-card>
