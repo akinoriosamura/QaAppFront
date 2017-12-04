@@ -1,34 +1,55 @@
 <template>
   <v-ons-page>
     <custom-toolbar v-bind="toolbarInfo"></custom-toolbar>
-    <v-ons-card v-for="page of pages" :key="label">
-      <div class="title">{{ page.label }}</div>
-      <div class="content">{{ page.desc }}</div>
-    </v-ons-card>
+
+      <v-ons-card>
+          <div class="title"> Question </div>
+          <div class="content">{{ content }}</div>
+      </v-ons-card>
+
+      <v-ons-card v-if="results.content">
+          <div class="title"> Answer </div>
+          <div class="content">{{ results.content }}</div>
+      </v-ons-card>
+      <v-ons-card v-else>
+          <div class="title"> Answer </div>
+          <div class="content">{{ answer }}</div>
+      </v-ons-card>
   </v-ons-page>
 </template>
 
 <script>
+import Vue from 'vue';
+import VueCookie from 'cookie-in-vue';
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      pages: [
-        {
-          label: 'Question',
-          desc: '三軒茶屋で一番美味しい牛丼屋は？'
-        },
-        {
-          label: 'Answer',
-          desc: '吉野家一択です。'
+      results: [],
+      post_id: 0,
+      content: "not get",
+      answer: "未回答"
+    };
+  },
+  methods: {
+    getAnswer() {
+      // post_controllerにより、post_に紐づくcommentをpost_idを元に取る。
+      axios.get(process.env.API_DOMAIN_URL + "v1/posts/" + this.post_id, {
+        headers: {
+          'access-token': VueCookie.get('access-token'),
+          'client': VueCookie.get('client'),
+          'uid': VueCookie.get('uid')
         }
-      ],
-      questionid: -1
+      })
+      .then(response => {
+        Vue.set(this, 'results', response.data["comment"])
+        this.$emit('refresh')
+      })
     }
   },
-  computed: {
-    ComputedId() {
-      return this.questionid
-    }
+  mounted() {
+    this.getAnswer()
   }
 }
 </script>

@@ -3,7 +3,7 @@
     <div>
       <!--リストアイテムで専門家が並ぶからプロフィールページから取得？-->
       <v-ons-list>
-        <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id)" tappable>
+        <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id, result.content)" tappable>
           <div class="left">
             <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
           </div>
@@ -42,21 +42,24 @@ export default {
         this.$emit('refresh')
       })
     },
-    push(key) {
+    push(post_id, content) {
       this.$store.commit('navigator/push', {
         extends: Questions_detail,
         data() {
           return {
+            // Questions_detailへの継承データ
+            post_id: post_id,
+            content: content,
+            // toolbarへの継承データ
             toolbarInfo: {
               backLabel: '質問一覧',
-              title: key
+              title: "質問詳細"
             }
           }
         }
       });
     }
   },
-  // render直前に実行するproperty
   mounted() {
     this.$store.watch((state) => state.login, () => {
       if (this.$store.state.login) {
@@ -65,7 +68,7 @@ export default {
         results = []
       }
     })
-    this.results = this.getContents()
+    this.getContents()
   }
 }
 </script>
