@@ -1,26 +1,22 @@
 <template id="Spe_Profile">
   <v-ons-page>
-    <v-ons-toolbar>
-      <div class="left">
-        <v-ons-back-button>専門家一覧</v-ons-back-button>
-      </div>
-      <div class="center">専門家(ID = {{ specialistid }})</div>
-    </v-ons-toolbar>
-        <v-ons-card style="height:100%;text-align:center;" :key="index">
+    <custom-toolbar v-bind="toolbarInfo"></custom-toolbar>
+        <v-ons-card style="height:100%;text-align:center;">
           <img src="https://monaca.io/img/logos/download_image_onsenui_01.png" alt="Onsen UI" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
           <div class="title" style="text-align=center center">
-            テスト{{SpecialistName}}
+            {{ name }}
           </div>
           <div class="content">
             <v-ons-list>
               <v-ons-list-header>経歴</v-ons-list-header>
-              <v-ons-list-item>{{content}}</v-ons-list-item>
+              <v-ons-list-item>{{ document }}</v-ons-list-item>
               <v-ons-list-header>対応範囲</v-ons-list-header>
               <v-ons-list-item>{{}}</v-ons-list-item>
               <div class="bottom">
-              <v-ons-list-header style="font-weight:bold">最低価格　500円</v-ons-list-header>
-              <v-ons-button modifier="large" style="margin: 6px 0">この専門家に質問</v-ons-button>
-            </div>
+                <v-ons-list-header style="font-weight:bold">最低価格　{{ l_price }}円</v-ons-list-header>
+                 <v-ons-button v-if="user_id == ''" modifier="large" style="margin: 6px 0">ログインしてください</v-ons-button>
+                <v-ons-button v-else modifier="large" style="margin: 6px 0" @click="push(specialist_id)">この専門家に質問</v-ons-button>
+              </div>
             </v-ons-list>
           </div>
         </v-ons-card>
@@ -28,16 +24,45 @@
 </template>
 
 <script>
+import Spe_QueContent from './Spe_QueContent.vue';
+import CustomToolbar from '../partials/CustomToolbar.vue'
+
 export default {
+  componetns: {
+    CustomToolbar
+  },
   data() {
     return {
-      specialistid: -1
+      user_id: '',
+      specialist_id: '',
+      name: "None",
+      image: "None",
+      document: "None",
+      l_price: 0
+    };
+  },
+  methods: {
+    push() {
+      this.$store.commit('navigator/push', {
+        extends: Spe_QueContent,
+        data(specialist_id) {
+          return {
+            specialist_id: specialist_id,
+            toolbarInfo: {
+              backLabel: '専門家詳細',
+              title: "質問"
+            }
+          }
+        }
+      });
+    },
+    fromChild() {
+      alert("from child");
     }
   },
-  computed: {
-    ComputedId() {
-      return this.specialistid
-    }
+  mounted() {
+    console.log("user_id")
+    console.log(this.user_id);
   }
 }
 </script>

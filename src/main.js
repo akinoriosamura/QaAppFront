@@ -1,26 +1,35 @@
-import 'onsenui';
-import Vue from 'vue';
-import Vuex from 'vuex';
-import VueCookie from 'cookie-in-vue';
-import VueOnsen from 'vue-onsenui';
-import storeLike from './store.js'
-
 // Onsen UI Styling and Icons
 require('onsenui/css-components-src/src/onsen-css-components.css');
 require('onsenui/css/onsenui.css');
 
-import App from './App.vue';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import VueOnsen from 'vue-onsenui'; // For UMD
+// import VueOnsen from 'vue-onsenui/esm'; // For ESM
+// import * as OnsenComponents from './onsen-components'; // For ESM
+import storeLike from './store.js';
+import CustomToolbar from './partials/CustomToolbar.vue';
+import AppNavigator from './AppNavigator.vue';
 
-Vue.use(VueOnsen);
 Vue.use(Vuex);
-Vue.use(VueCookie);
+Vue.use(VueOnsen);
 
-var eventHub = new Vue();
-window.Event = eventHub;
+// Register components globally
+// Object.values(OnsenComponents).forEach(component => Vue.component(component.name, component)); // For ESM
+Vue.component('custom-toolbar', CustomToolbar); // Common toolbar
 
 new Vue({
   el: '#app',
+  render: h => h(AppNavigator),
   store: new Vuex.Store(storeLike),
-  template:'<app></app>',
-  components: { App }
+  beforeCreate() {
+    // Shortcut for Material Design
+    Vue.prototype.md = this.$ons.platform.isAndroid();
+
+    // Set iPhoneX flag based on URL
+    if (window.location.search.match(/iphonex/i)) {
+      document.documentElement.setAttribute('onsflag-iphonex-portrait', '');
+      document.documentElement.setAttribute('onsflag-iphonex-landscape', '');
+    }
+  }
 });
