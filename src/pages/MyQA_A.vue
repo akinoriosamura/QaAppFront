@@ -1,6 +1,6 @@
 <template>
   <v-ons-page>
-    <custom-toolbar v-bind="toolbarInfo"></custom-toolbar>
+    <custom-toolbar v-bind="toolbarInfo" @childs-event="setUserId"></custom-toolbar>
 
       <v-ons-card>
           <div class="title"> 質問 </div>
@@ -29,6 +29,7 @@ export default {
   data() {
     return {
       results: [],
+      user_id: -1,
       post_id: 0,
       content: "not get",
       answer: ""
@@ -36,6 +37,8 @@ export default {
   },
   methods: {
     getAnswer() {
+      console.log("setuser in myqaq getanswer")
+      console.log(this.user_id)
       // post_controllerにより、post_に紐づくcommentをpost_idを元に取る。
       axios.get(process.env.API_DOMAIN_URL + "v1/posts/" + this.post_id, {
         headers: {
@@ -53,7 +56,7 @@ export default {
       if (!answer) {
         alert('回答を入力してください。')
       } else {
-        const data = { user_id: VueCookie.get('id'), content: answer, post_id: post_id, pv: 0}
+        const data = { user_id: this.user_id, content: answer, post_id: post_id, pv: 0}
         console.log(data);
         axios.post(process.env.API_DOMAIN_URL + "v1/comments", data, {
               headers: {
@@ -65,14 +68,21 @@ export default {
         .then(response => {
           console.log('body:', response.data)
         })
-        this.pop()
+        // pop navigator stack and back to previous page
+        this.$store.commit('navigator/pop')
       }
     },
-    pop() {
-      this.$store.commit('navigator/pop')
+    // get login user id from CustomToolbar
+    setUserId(user_id) {
+      console.log("setuser in myqaa")
+      console.log(this.user_id)
+      this.user_id = user_id
+      console.log(this.user_id)
     }
   },
   mounted() {
+    console.log("setuser in myqaa")
+    console.log(this.user_id)
     this.getAnswer()
   }
 }

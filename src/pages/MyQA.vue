@@ -13,7 +13,7 @@
 
         <v-ons-page>
           <v-ons-list>
-            <v-ons-list-item v-for="myquestion in myquestions" :key="myquestion.id" @click="push_Q(myquestion.id, myquestion.content)" tappable>
+            <v-ons-list-item v-for="myquestion in myquestions" :key="myquestion.id" @click="push_Q(myquestion.id, myquestion.content, user_id)" tappable>
               {{ myquestion.content }}
             </v-ons-list-item>
           </v-ons-list>
@@ -25,7 +25,7 @@
 
         <v-ons-page>
           <v-ons-list>
-            <v-ons-list-item v-for="myanswer in myanswers" :key="myanswer.id" @click="push_A(myanswer.id, myanswer.content)" tappable>
+            <v-ons-list-item v-for="myanswer in myanswers" :key="myanswer.id" @click="push_A(myanswer.id, myanswer.content, user_id)" tappable>
               {{ myanswer.content }}
             </v-ons-list-item>
           </v-ons-list>
@@ -46,6 +46,7 @@ import MyQA_A from './MyQA_A.vue';
 export default {
   data() {
     return {
+      user_id: -1,
       myquestions: [],
       myanswers: []
     };
@@ -77,12 +78,13 @@ export default {
         this.$emit('refresh')
       })
     },
-    push_Q(post_id, content) {
+    push_Q(post_id, content, user_id) {
       this.$store.commit('navigator/push', {
         extends: MyQA_Q,
         data() {
           return {
             // Questions_detailへの継承データ
+            user_id: user_id,
             post_id: post_id,
             content: content,
             // toolbarへの継承データ
@@ -94,12 +96,13 @@ export default {
         }
       });
     },
-    push_A(post_id, content) {
+    push_A(post_id, content, user_id) {
       this.$store.commit('navigator/push', {
         extends: MyQA_A,
         data() {
           return {
             // Questions_detailへの継承データ
+            user_id: user_id,
             post_id: post_id,
             content: content,
             // toolbarへの継承データ
@@ -117,12 +120,16 @@ export default {
       if (this.$store.state.login) {
         this.getMyquestions()
         this.getMyanswers()
-      } else {
-        results = []
+        this.user_id = VueCookie.get('id')
+        console.log("myqa after user_id")
+        console.log(this.user_id)
       }
     })
     this.getMyquestions()
     this.getMyanswers()
+    this.user_id = VueCookie.get('id')
+    console.log("myqa after user_id")
+    console.log(this.user_id)
   }
 };
 </script>

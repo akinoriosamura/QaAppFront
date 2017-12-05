@@ -50,22 +50,27 @@
             VueCookie.set('id', rec.data['data']['id']);
             this.$store.commit('set', true);
           }
-          console.log("setuserid");
-          this.sendUserID()
+          // pass user id to parent page
+          this.$emit('childs-event', VueCookie.get('id'))
         }
       },
       logout() {
+        // send event redirecting home
+        this.$emit('logout-event')
+        // pass user id -1 to parent page for logout user
+        this.$emit('childs-event', -1)
+        this.userName = '';
+        this.$store.commit('set', false);
+
         VueCookie.remove('access-token');
         VueCookie.remove('client');
         VueCookie.remove('uid');
         VueCookie.remove('name');
         VueCookie.remove('id');
-        this.userName = '';
-        this.$store.commit('set', false);
-      },
-      // ログインユーザーidを画面コンポーネントに送る。
-      sendUserID() {
-        this.$parent.user_id = "from child!!!";
+
+        console.log("state")
+        console.log(this.$store.state.login)
+        console.log(this.userName)
       }
     },
     created() {
@@ -73,7 +78,15 @@
     },
     destroyed() {
       window.removeEventListener('message', this.receiveMessage);
+    },
+    mounted() {
+      // ログイン状態なら名前を入れる。ログアウト状態ならnilを代入
+      console.log(this.$store.state.login)
+      if (this.$store.state.login) {
+        this.userName = VueCookie.get('name');
+      } else {
+        this.userName = ''
+      }
     }
   };
-
 </script>

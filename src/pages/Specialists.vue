@@ -3,7 +3,7 @@
     <div>
       <!--リストアイテムで専門家が並ぶからプロフィールページから取得？-->
       <v-ons-list>
-        <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id, result.name, result.image, result.document, result.l_price)" tappable>
+        <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id, result.name, result.image, result.document, result.l_price, user_id)" tappable>
           <div class="left">
             <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
           </div>
@@ -26,7 +26,8 @@ import Spe_Profile from './Spe_Profile.vue';
 export default{
   data(){
     return {
-      results:[]
+      results:[],
+      user_id: -1
     };
   },
   methods: {
@@ -43,13 +44,14 @@ export default{
         this.$emit('refresh')
       })
     },
-    push(id, name, image, document, l_price) {
+    push(specialist_id, name, image, document, l_price, user_id) {
       this.$store.commit('navigator/push', {
         extends: Spe_Profile,
         data() {
           return {
             // Spe_Profileへの継承データ
-            specialist_id: id,
+            user_id: user_id,
+            specialist_id: specialist_id,
             name: name,
             image: image,
             document: document,
@@ -68,11 +70,15 @@ export default{
     this.$store.watch((state) => state.login, () => {
       if (this.$store.state.login) {
         this.getUsers();
-      } else {
-        results = []
+        this.user_id = VueCookie.get('id')
+        console.log("myqa after user_id")
+        console.log(this.user_id)
       }
     })
     this.getUsers();
+    this.user_id = VueCookie.get('id')
+    console.log("myqa after user_id")
+    console.log(this.user_id)
   }
 }
 </script>

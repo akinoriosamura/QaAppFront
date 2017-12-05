@@ -1,6 +1,6 @@
 <template>
   <v-ons-page>
-    <custom-toolbar v-bind="toolbarInfo"></custom-toolbar>
+    <custom-toolbar v-bind="toolbarInfo" @childs-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
 
       <v-ons-card>
           <div class="title"> 質問 </div>
@@ -27,6 +27,7 @@ export default {
   data() {
     return {
       results: [],
+      user_id: -1,
       post_id: 0,
       content: "not get",
       answer: "未回答"
@@ -46,6 +47,13 @@ export default {
         Vue.set(this, 'results', response.data["comment"])
         this.$emit('refresh')
       })
+    },
+    // get login user id from CustomToolbar
+    setUserId(user_id) {
+      this.user_id = user_id
+    },
+    redirectHome() {
+      this.$store.commit('navigator/pop')
     }
   },
   mounted() {
