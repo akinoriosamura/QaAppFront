@@ -8,8 +8,11 @@
       </v-ons-card>
 
       <v-ons-card v-if="results">
-          <div class="title"> 回答 </div>
-          <div class="content">{{ results.content }}</div>
+          <div class="answer" v-if="user_id==results.user_id">
+            <div class="title"> 回答 </div>
+            <div class="content">{{ results.content }}</div>
+          </div>
+          <v-ons-button v-else modifier="large" style="margin: 10px 0" @click="openAnswer(results.user_id)">閲覧</v-ons-button>
       </v-ons-card>
       <v-ons-card v-else>
           <div class="title"> 回答 </div>
@@ -54,6 +57,10 @@ export default {
     },
     redirectHome() {
       this.$store.commit('navigator/pop')
+    },
+    openAnswer(user_id) {
+      // ここに決済のフローを書く。
+      this.user_id = user_id
     }
   },
   mounted() {
