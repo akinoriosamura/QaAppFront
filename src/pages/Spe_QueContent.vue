@@ -3,7 +3,7 @@
     <custom-toolbar v-bind="toolbarInfo"></custom-toolbar>
         <textarea v-model="content" placeholder="ここに質問を記入してください。"></textarea>
 
-        <v-ons-button modifier="large" style="margin: 10px 0" @click="setContent(content)">質問</v-ons-button>
+        <v-ons-button modifier="large" style="margin: 10px 0" @click="setContent(user_id, content)">質問</v-ons-button>
   </v-ons-page>
 </template>
 
@@ -20,11 +20,11 @@ export default {
     };
   },
   methods: {
-    setContent(content) {
+    setContent(user_id, content) {
       if (!content) {
         alert('質問を入力してください。')
       } else {
-        const data = { user_id: VueCookie.get('id'), content: content}
+        const data = { user_id: user_id, content: content}
         console.log(data);
         axios.post(process.env.API_DOMAIN_URL + "v1/posts", data, {
               headers: {

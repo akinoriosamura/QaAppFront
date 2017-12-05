@@ -50,6 +50,8 @@
             VueCookie.set('id', rec.data['data']['id']);
             this.$store.commit('set', true);
           }
+          console.log("setuserid");
+          this.sendUserID()
         }
       },
       logout() {
@@ -60,6 +62,10 @@
         VueCookie.remove('id');
         this.userName = '';
         this.$store.commit('set', false);
+      },
+      // ログインユーザーidを画面コンポーネントに送る。
+      sendUserID() {
+        this.$parent.user_id = "from child!!!";
       }
     },
     created() {
