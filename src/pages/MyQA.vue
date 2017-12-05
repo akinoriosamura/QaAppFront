@@ -1,11 +1,6 @@
 <template>
   <v-ons-page>
-    <v-ons-segment v-if="!md"
-      tabbar-id="infinite-scroll-tabbar"
-    >
-      </v-ons-segment>
-
-    <v-ons-tabbar id="infinite-scroll-tabbar" position="top">
+    <v-ons-tabbar position="top">
       <v-ons-tab label="My Question" active></v-ons-tab>
       <v-ons-tab label="My Answer"></v-ons-tab>
 
@@ -17,10 +12,6 @@
               {{ myquestion.content }}
             </v-ons-list-item>
           </v-ons-list>
-
-          <div class="after-list">
-            <v-ons-icon icon="fa-spinner" size="26px" spin></v-ons-icon>
-          </div>
         </v-ons-page>
 
         <v-ons-page>
@@ -53,7 +44,8 @@ export default {
   },
   methods: {
     getMyquestions() {
-      axios.get(process.env.API_DOMAIN_URL + "v1/posts", {
+      const data = { user_id: this.user_id}
+      axios.post(process.env.API_DOMAIN_URL + "v1/posts/myquestions", data, {
         headers: {
           'access-token': VueCookie.get('access-token'),
           'client': VueCookie.get('client'),
@@ -61,12 +53,17 @@ export default {
         }
       })
       .then(response => {
-        Vue.set(this, 'myquestions', response.data["posts"])
+        console.log('Qbody:', response.data)
+        console.log('Qbody:', response.data["posts"])
+        if (response.data) {
+          Vue.set(this, 'myquestions', response.data["posts"])
+        }
         this.$emit('refresh')
       })
     },
     getMyanswers() {
-      axios.get(process.env.API_DOMAIN_URL + "v1/posts", {
+      const data = { user_id: this.user_id}
+      axios.post(process.env.API_DOMAIN_URL + "v1/posts/myanswers", data, {
         headers: {
           'access-token': VueCookie.get('access-token'),
           'client': VueCookie.get('client'),
@@ -74,7 +71,11 @@ export default {
         }
       })
       .then(response => {
-        Vue.set(this, 'myanswers', response.data["posts"])
+        console.log('Abody:', response.data)
+        console.log('Abody:', response.data["posts"])
+        if (response.data) {
+          Vue.set(this, 'myanswers', response.data["posts"])
+        }
         this.$emit('refresh')
       })
     },
