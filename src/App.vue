@@ -1,6 +1,6 @@
 <template>
   <v-ons-page :style="swipePosition">
-    <custom-toolbar :style="swipeTheme" modifier="white-content">
+    <custom-toolbar :style="swipeTheme" modifier="white-content" @logout-event="redirectHome">
       {{ title }}
     </custom-toolbar>
 
@@ -55,7 +55,7 @@ export default {
           theme: blue
         },
         {
-          label: '登録',
+          label: 'プロフィール',
           icon: this.md ? null : 'md-account',
           page: Register,
           theme: purple
@@ -71,6 +71,11 @@ export default {
       const a = Math.floor(index), b = Math.ceil(index), ratio = index % 1;
       this.colors = this.colors.map((c, i) => lerp(this.tabs[a].theme[i], this.tabs[b].theme[i], ratio));
       this.topPosition = lerp(this.tabs[a].top || 0, this.tabs[b].top || 0, ratio);
+    },
+    // logoutを押した時にhomeへリダイレクト
+    redirectHome() {
+      this.$store.commit('navigator/reset')
+      this.$store.commit('tabbar/set', 0)
     }
   },
   computed: {

@@ -1,7 +1,8 @@
 export default {
   strict: true,
   state: {
-    login: false
+    login: false,
+    results: ''
   },
   mutations: {
     set(state, login) {

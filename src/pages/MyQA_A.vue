@@ -28,9 +28,9 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      results: [],
+      results: '',
       user_id: -1,
-      post_id: 0,
+      post_id: -1,
       content: "not get",
       answer: ""
     };

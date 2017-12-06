@@ -8,10 +8,8 @@
           </div>
           <div class="content">
             <v-ons-list>
-              <v-ons-list-header>経歴</v-ons-list-header>
+              <v-ons-list-header>紹介文</v-ons-list-header>
               <v-ons-list-item>{{ document }}</v-ons-list-item>
-              <v-ons-list-header>対応範囲</v-ons-list-header>
-              <v-ons-list-item>{{}}</v-ons-list-item>
               <div class="bottom">
                 <v-ons-list-header style="font-weight:bold">最低価格　{{ l_price }}円</v-ons-list-header>
                  <v-ons-button v-if="user_id == -1" modifier="large" style="margin: 6px 0">ログインしてください</v-ons-button>
@@ -39,6 +37,7 @@ export default {
   },
   methods: {
     push(user_id, specialist_id) {
+      console.log(this.user_id)
       this.$store.commit('navigator/push', {
         extends: Spe_QueContent,
         data() {

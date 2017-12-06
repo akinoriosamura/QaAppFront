@@ -2,8 +2,18 @@
   <v-ons-page>
     <div>
       <!--リストアイテムで専門家が並ぶからプロフィールページから取得？-->
-      <v-ons-list>
-        <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id, result.content, user_id)" tappable>
+      <v-ons-list v-if="user_id==-1">
+        <v-ons-list-item v-for="result in results" :key="result.id">
+          <div class="left">
+            <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
+          </div>
+          <div class="center">
+            <span class="list-item__title">{{result.content}}</span>
+          </div>
+        </v-ons-list-item>
+      </v-ons-list>
+      <v-ons-list v-else>
+        <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id, result.content, user_id, result.user_id)" tappable>
           <div class="left">
             <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
           </div>
@@ -25,8 +35,8 @@ import Questions_detail from './Questions_detail.vue';
 export default {
   data() {
     return {
-      results: [],
-      user_id: -1
+      results: '',
+      user_id: -1,
     };
   },
   methods: {
@@ -43,7 +53,7 @@ export default {
         this.$emit('refresh')
       })
     },
-    push(post_id, content, user_id) {
+    push(post_id, content, user_id, post_user_id) {
       this.$store.commit('navigator/push', {
         extends: Questions_detail,
         data() {
@@ -51,6 +61,7 @@ export default {
             // Questions_detailへの継承データ
             user_id: user_id,
             post_id: post_id,
+            post_user_id: post_user_id,
             content: content,
             // toolbarへの継承データ
             toolbarInfo: {
@@ -63,6 +74,7 @@ export default {
     }
   },
   mounted() {
+    // ログインしたらuser_idを更新
     this.$store.watch((state) => state.login, () => {
       if (this.$store.state.login) {
         this.getContents()
@@ -72,9 +84,13 @@ export default {
       }
     })
     this.getContents()
-    this.user_id = VueCookie.get('id')
-    console.log("myqa after user_id")
-    console.log(this.user_id)
+    // タブが変わった時に、ログアウト状態ならresultsもログアウト状態（null）にする
+    this.$store.watch((state) => this.$store.state.tabbar.index, () => {
+      if (!this.$store.state.login) {
+        this.results = this.$store.state.results
+      }
+      this.getContents()
+    })
   }
 }
 </script>
