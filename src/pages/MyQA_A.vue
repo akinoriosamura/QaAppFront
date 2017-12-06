@@ -1,6 +1,6 @@
 <template>
   <v-ons-page>
-    <custom-toolbar v-bind="toolbarInfo" @childs-event="setUserId"></custom-toolbar>
+    <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
 
       <v-ons-card>
           <div class="title"> 質問 </div>
@@ -78,6 +78,11 @@ export default {
       console.log(this.user_id)
       this.user_id = user_id
       console.log(this.user_id)
+    },
+    // logoutを押した時にhomeへリダイレクト
+    redirectHome() {
+      this.$store.commit('navigator/reset')
+      this.$store.commit('tabbar/set', 0)
     }
   },
   mounted() {

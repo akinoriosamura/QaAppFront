@@ -1,6 +1,6 @@
 <template id="Spe_Profile">
   <v-ons-page>
-    <custom-toolbar v-bind="toolbarInfo" @childs-event="setUserId"></custom-toolbar>
+    <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
         <v-ons-card style="height:100%;text-align:center;">
           <img src="https://monaca.io/img/logos/download_image_onsenui_01.png" alt="Onsen UI" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
           <div class="title" style="text-align=center center">
@@ -56,6 +56,11 @@ export default {
     // get login user id from CustomToolbar
     setUserId(user_id) {
       this.user_id = user_id
+    },
+    // logoutを押した時にhomeへリダイレクト
+    redirectHome() {
+      this.$store.commit('navigator/reset')
+      this.$store.commit('tabbar/set', 0)
     }
   }
 }

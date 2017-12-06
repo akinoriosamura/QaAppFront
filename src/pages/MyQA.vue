@@ -62,6 +62,7 @@ export default {
       })
     },
     getMyanswers() {
+      console.log(this.user_id)
       const data = { user_id: this.user_id}
       axios.post(process.env.API_DOMAIN_URL + "v1/posts/myanswers", data, {
         headers: {

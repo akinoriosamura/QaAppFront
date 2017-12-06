@@ -51,26 +51,30 @@
             this.$store.commit('set', true);
           }
           // pass user id to parent page
-          this.$emit('childs-event', VueCookie.get('id'))
+          this.$emit('setId-event', VueCookie.get('id'))
         }
       },
       logout() {
-        // send event redirecting home
-        this.$emit('logout-event')
-        // pass user id -1 to parent page for logout user
-        this.$emit('childs-event', -1)
-        this.userName = '';
-        this.$store.commit('set', false);
-
         VueCookie.remove('access-token');
         VueCookie.remove('client');
         VueCookie.remove('uid');
         VueCookie.remove('name');
         VueCookie.remove('id');
 
+        console.log("state_be")
+        console.log(this.$store.state.login)
+        console.log(this.userName)
+        // pass user id -1 to parent page for logout user
+        this.$emit('setId-event', -1)
+        this.$store.commit('set', false)
+
+        this.userName = ''
+
         console.log("state")
         console.log(this.$store.state.login)
         console.log(this.userName)
+        // send event redirecting home
+        this.$emit('logout-event')
       }
     },
     created() {
@@ -81,6 +85,17 @@
     },
     mounted() {
       // ログイン状態なら名前を入れる。ログアウト状態ならnilを代入
+      console.log("mounte1")
+      console.log(this.$store.state.login)
+      if (this.$store.state.login) {
+        this.userName = VueCookie.get('name');
+      } else {
+        this.userName = ''
+      }
+    },
+    beforeUpdate() {
+      // ログイン状態なら名前を入れる。ログアウト状態ならnilを代入
+      console.log("mounted3")
       console.log(this.$store.state.login)
       if (this.$store.state.login) {
         this.userName = VueCookie.get('name');

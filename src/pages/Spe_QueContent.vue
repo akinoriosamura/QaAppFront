@@ -1,6 +1,6 @@
 <template>
   <v-ons-page>
-    <custom-toolbar v-bind="toolbarInfo" @childs-event="setUserId"></custom-toolbar>
+    <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
         <textarea v-model="content" placeholder="ここに質問を記入してください。"></textarea>
 
         <v-ons-button modifier="large" style="margin: 10px 0" @click="setContent(user_id, content, specialist_id)">質問</v-ons-button>
@@ -44,6 +44,11 @@ export default {
     // get login user id from CustomToolbar
     setUserId(user_id) {
       this.user_id = user_id
+    },
+    // logoutを押した時にhomeへリダイレクト
+    redirectHome() {
+      this.$store.commit('navigator/reset')
+      this.$store.commit('tabbar/set', 0)
     }
   }
 }
