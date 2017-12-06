@@ -1,7 +1,7 @@
 <template>
   <v-ons-page>
     <v-ons-card v-show="results" style="height:100%;text-align:center;">
-      <img src="https://monaca.io/img/logos/download_image_onsenui_01.png" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
+      <img :src="image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
       <div class="title" style="text-align=center center">
         {{ results.name }}
       </div>
@@ -13,7 +13,7 @@
           <v-ons-list-item>{{ results.l_price }}</v-ons-list-item>
         </v-ons-list>
       </div>
-      <v-ons-button modifier="large" style="margin: 10px 0" @click="push(user_id, results.document, results.name, results.l_price)">プロフィール編集</v-ons-button>
+      <v-ons-button modifier="large" style="margin: 10px 0" @click="push(user_id, results.name, image, results.document, results.l_price)">プロフィール編集</v-ons-button>
     </v-ons-card>
   </v-ons-page>
 </template>
@@ -45,8 +45,9 @@ export default {
         Vue.set(this, 'results', response.data["user"])
         this.$emit('refresh')
       })
+      this.createImage(this.results.image)
     },
-    push(user_id, name, document, l_price) {
+    push(user_id, name, image, document, l_price) {
       this.$store.commit('navigator/push', {
         extends: EditProfile,
         data() {
@@ -54,6 +55,7 @@ export default {
             // Spe_Profileへの継承データ
             user_id: user_id,
             name: name,
+            image: image,
             document: document,
             l_price: l_price,
             // toolbarへの継承データ
@@ -73,6 +75,13 @@ export default {
     redirectHome() {
       this.$store.commit('navigator/reset')
       this.$store.commit('tabbar/set', 0)
+    },
+    // アップロードした画像を表示
+    createImage(file) {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        this.image = e.target.result;
+      };
     }
   },
   mounted() {

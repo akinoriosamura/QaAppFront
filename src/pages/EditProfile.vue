@@ -1,9 +1,10 @@
 <template>
   <v-ons-page>
+    <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
     <v-ons-card style="height:100%;text-align:center;">
       <div class="img">
-        <img v-if="uploadedImage" src="uploadedImage" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
-        <img v-else src="https://monaca.io/img/logos/download_image_onsenui_01.png" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
+        <img v-if="uploadedImage" :src="uploadedImage" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
+        <img v-else src="image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
       </div>
       <div class="upload">
         <input type="file" v-on:change="onFileChange">
@@ -42,6 +43,7 @@ export default {
       results: '',
       user_id: -1,
       name: '',
+      image: '',
       document: '',
       l_price: -1,
       uploadedImage: ''
@@ -49,6 +51,7 @@ export default {
   },
   methods: {
     edit() {
+/*      const data = { user_id: this.user_id, name: this.name, image: this.files[0], document: this.document, l_price: this.l_price }*/
       const data = { user_id: this.user_id, name: this.name, document: this.document, l_price: this.l_price }
       axios.put(process.env.API_DOMAIN_URL + "v1/users/" + this.user_id, data, {
         headers: {
@@ -75,6 +78,18 @@ export default {
       };
       reader.readAsDataURL(file);
     },
+    // get login user id from CustomToolbar
+    setUserId(user_id) {
+      console.log("setuser in myqaa")
+      console.log(this.user_id)
+      this.user_id = user_id
+      console.log(this.user_id)
+    },
+    // logoutを押した時にhomeへリダイレクト
+    redirectHome() {
+      this.$store.commit('navigator/reset')
+      this.$store.commit('tabbar/set', 0)
+    }
   }
 }
 </script>

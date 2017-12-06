@@ -3,7 +3,7 @@
     <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
         <textarea v-model="content" placeholder="ここに質問を記入してください。"></textarea>
 
-        <v-ons-button modifier="large" style="margin: 10px 0" @click="setContent(user_id, content, specialist_id)">質問</v-ons-button>
+        <v-ons-button modifier="large" style="margin: 10px 0" @click="setContent(user_id, content, specialist_id)">{{ l_price }} 円で質問</v-ons-button>
   </v-ons-page>
 </template>
 
@@ -17,6 +17,7 @@ export default {
     return {
       user_id: -1,
       specialist_id: -1,
+      l_price: -1,
       content: ''
     };
   },
