@@ -4,7 +4,7 @@
     <v-ons-card style="height:100%;text-align:center;">
       <div class="img">
         <img v-if="uploadedImage" :src="uploadedImage" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
-        <img v-else src="image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
+        <img v-else :src="image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
       </div>
       <div class="upload">
         <input type="file" v-on:change="onFileChange">
@@ -27,7 +27,7 @@
           </v-ons-list-item>
         </v-ons-list>
       </div>
-      <v-ons-button modifier="large" style="margin: 10px 0" @click="edit">編集</v-ons-button>
+      <v-ons-button modifier="large" style="margin: 10px 0" @click="edit(user_id, name, saveFile, document, l_price)">編集</v-ons-button>
     </v-ons-card>
   </v-ons-page>
 </template>
@@ -46,14 +46,29 @@ export default {
       image: '',
       document: '',
       l_price: -1,
-      uploadedImage: ''
+      uploadedImage: '',
+      saveFile: ''
     };
   },
   methods: {
-    edit() {
-/*      const data = { user_id: this.user_id, name: this.name, image: this.files[0], document: this.document, l_price: this.l_price }*/
-      const data = { user_id: this.user_id, name: this.name, document: this.document, l_price: this.l_price }
+    edit(user_id, name, saveFile, document, l_price) {
+      //save profile info othar than image
+      const data = { user_id: user_id, name: name, document: document, l_price: l_price }
+      console.log(data)
       axios.put(process.env.API_DOMAIN_URL + "v1/users/" + this.user_id, data, {
+        headers: {
+          'access-token': VueCookie.get('access-token'),
+          'client': VueCookie.get('client'),
+          'uid': VueCookie.get('uid')
+        }
+      })
+      .then(response => {
+        console.log('body:', response.data)
+      })
+      // save imagge
+      // body {title: title, image: image, name: user_name}
+      console.log(saveFile)
+      axios.post(process.env.API_DOMAIN_URL + "v1/images", saveFile, {
         headers: {
           'access-token': VueCookie.get('access-token'),
           'client': VueCookie.get('client'),
@@ -66,6 +81,7 @@ export default {
       // pop navigator stack and back to previous page
       this.$store.commit('navigator/pop')
     },
+    // アップロードしたデータにファイルチェンジ
     onFileChange(e) {
       let files = e.target.files || e.dataTransfer.files;
       this.createImage(files[0]);
@@ -75,6 +91,7 @@ export default {
       let reader = new FileReader();
       reader.onload = (e) => {
         this.uploadedImage = e.target.result;
+        this.saveFile = {title: file.name, image: file, name: this.user_id}
       };
       reader.readAsDataURL(file);
     },
@@ -88,7 +105,7 @@ export default {
     // logoutを押した時にhomeへリダイレクト
     redirectHome() {
       this.$store.commit('navigator/reset')
-      this.$store.commit('tabbar/set', 0)
+      //this.$store.commit('tabbar/set', 0)
     }
   }
 }

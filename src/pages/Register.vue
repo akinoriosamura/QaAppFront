@@ -1,7 +1,7 @@
 <template>
   <v-ons-page>
     <v-ons-card v-show="results" style="height:100%;text-align:center;">
-      <img :src="image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
+      <img :src="results.image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
       <div class="title" style="text-align=center center">
         {{ results.name }}
       </div>
@@ -13,7 +13,7 @@
           <v-ons-list-item>{{ results.l_price }}</v-ons-list-item>
         </v-ons-list>
       </div>
-      <v-ons-button modifier="large" style="margin: 10px 0" @click="push(user_id, results.name, image, results.document, results.l_price)">プロフィール編集</v-ons-button>
+      <v-ons-button modifier="large" style="margin: 10px 0" @click="push(user_id, results.name, results.image, results.document, results.l_price)">プロフィール編集</v-ons-button>
     </v-ons-card>
   </v-ons-page>
 </template>
@@ -45,7 +45,7 @@ export default {
         Vue.set(this, 'results', response.data["user"])
         this.$emit('refresh')
       })
-      this.createImage(this.results.image)
+      //　this.createImage(this.results.image)
     },
     push(user_id, name, image, document, l_price) {
       this.$store.commit('navigator/push', {
@@ -96,6 +96,12 @@ export default {
     this.$store.watch((state) => this.$store.state.tabbar.index, () => {
       if (!this.$store.state.login) {
         this.results = this.$store.state.results
+      }
+    })
+    // 編集後プロフィール更新
+    this.$store.watch((state) => this.$store.state.navigator.stack, () => {
+      if (this.$store.state.login && this.$store.state.tabbar.index==3) {
+        this.getInfo()
       }
     })
   }
