@@ -4,6 +4,13 @@
         <textarea v-model="content" placeholder="ここに質問を記入してください。"></textarea>
 
         <v-ons-button modifier="large" style="margin: 10px 0" @click="setContent(user_id, content, specialist_id)">{{ l_price }} 円で質問</v-ons-button>
+
+        <!-- 登録 -->
+        <a href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_Bn5Ucw2PyuYcXIKM5Bv0EXER5cRLfM4w&scope=read_write">登録</a>
+
+        <!-- 1回目の決済 -->
+        <v-ons-button @click="checkout">Checkout</v-ons-button>
+
   </v-ons-page>
 </template>
 
@@ -50,6 +57,17 @@ export default {
     redirectHome() {
       this.$store.commit('navigator/reset')
       this.$store.commit('tabbar/set', 0)
+    },
+    checkout() {
+      // 質問料金設定
+      this.$checkout.open({
+        name: '質問料',
+        currency: 'jpy',
+        amount: 421,
+        token(token) {
+          console.log(token)
+        }
+      });
     }
   }
 }
