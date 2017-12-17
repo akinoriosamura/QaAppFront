@@ -6,6 +6,8 @@
           {{ backLabel }}
         </v-ons-back-button>
       </slot>
+        <!-- 登録 -->
+        <v-ons-button @click="register">登録</v-ons-button>
     </div>
     <div class="center"><slot>{{ title }}</slot></div>
     <div class="right">
@@ -75,6 +77,9 @@
         console.log(this.userName)
         // send event redirecting home
         this.$emit('logout-event')
+      },
+      register() {
+        var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe', "_blank", "location=yes");
       }
     },
     created() {

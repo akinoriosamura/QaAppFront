@@ -27,7 +27,7 @@
           </v-ons-list-item>
         </v-ons-list>
       </div>
-      <v-ons-button modifier="large" style="margin: 10px 0" @click="edit(user_id, name, saveFile, document, l_price)">編集</v-ons-button>
+      <v-ons-button modifier="large" style="margin: 10px 0" @click="edit(user_id, name, document, l_price, saveFile)">編集</v-ons-button>
     </v-ons-card>
   </v-ons-page>
 </template>
@@ -51,7 +51,7 @@ export default {
     };
   },
   methods: {
-    edit(user_id, name, saveFile, document, l_price) {
+    edit(user_id, name, document, l_price, saveFile) {
       //save profile info othar than image
       const data = { user_id: user_id, name: name, document: document, l_price: l_price }
       console.log(data)
@@ -59,25 +59,36 @@ export default {
         headers: {
           'access-token': VueCookie.get('access-token'),
           'client': VueCookie.get('client'),
-          'uid': VueCookie.get('uid')
+          'uid': VueCookie.get('uid'),
+          'content-type': 'application/json'
         }
       })
       .then(response => {
         console.log('body:', response.data)
       })
       // save imagge
-      // body {title: title, image: image, name: user_name}
-      console.log(saveFile)
-      axios.post(process.env.API_DOMAIN_URL + "v1/images", saveFile, {
-        headers: {
-          'access-token': VueCookie.get('access-token'),
-          'client': VueCookie.get('client'),
-          'uid': VueCookie.get('uid')
-        }
-      })
-      .then(response => {
-        console.log('body:', response.data)
-      })
+      // {filename: file.name, file: file}
+      console.log("formData1")
+      const formData = new FormData();
+      formData.append('image[filename]', user_id);
+      formData.append('image[file]', saveFile);
+      console.log(formData)
+      if (formData) {
+        axios.post(process.env.API_DOMAIN_URL + "v1/images", formData, {
+          headers: {
+            'access-token': VueCookie.get('access-token'),
+            'client': VueCookie.get('client'),
+            'uid': VueCookie.get('uid'),
+            'content-type': 'multipart/form-data'
+          }
+        })
+        .then(response => {
+          console.log('body:', response.data)
+        })
+        .catch( (response) => {
+          console.error('error:', response);
+        });
+      }
       // pop navigator stack and back to previous page
       this.$store.commit('navigator/pop')
     },
@@ -88,11 +99,13 @@ export default {
     },
     // アップロードした画像を表示
     createImage(file) {
+      this.saveFile = file
       let reader = new FileReader();
       reader.onload = (e) => {
         this.uploadedImage = e.target.result;
-        this.saveFile = {title: file.name, image: file, name: this.user_id}
       };
+      // User modelとImage modelにfilenameを入れ、両者をヒモ付
+      // filenameはランダムなハッシュ値などにし、独立性を高める
       reader.readAsDataURL(file);
     },
     // get login user id from CustomToolbar

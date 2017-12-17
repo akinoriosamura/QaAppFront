@@ -26,8 +26,8 @@ Vue.component('custom-toolbar', CustomToolbar); // Common toolbar
 // function.
 const options = {
   key: 'pk_test_OMdgx9Y4igUKyIc16n2tuudP',
-  currency: 'PHP',
-  panelLabel: '{{amount}}円'
+  locale: 'auto',
+  panelLabel: '{{amount}}'
 }
 
 Vue.use(VueStripeCheckout, options);
