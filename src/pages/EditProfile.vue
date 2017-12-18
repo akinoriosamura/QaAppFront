@@ -15,11 +15,13 @@
         <v-ons-list>
           <v-ons-list-header>名前</v-ons-list-header>
           <v-ons-list-item>
-            <textarea v-model="name" placeholder="name"></textarea>
+            <div class="name">
+              <v-ons-input class="name"v-model="name" placeholder="name"></v-ons-input>
+            </div>
           </v-ons-list-item>
           <v-ons-list-header>紹介文</v-ons-list-header>
-          <v-ons-list-item>
-            <textarea v-model="document" placeholder="紹介文"></textarea>
+          <v-ons-list-item class="document-item">
+            <textarea class="document" v-model="document" placeholder="紹介文"></textarea>
           </v-ons-list-item>
           <v-ons-list-header>最低回答金額</v-ons-list-header>
           <v-ons-list-item>
@@ -70,11 +72,12 @@ export default {
       // {filename: file.name, file: file}
       console.log("formData1")
       const formData = new FormData();
-      formData.append('image[filename]', user_id);
+      formData.append('image[user_id]', user_id);
+      formData.append('image[filename]', "profile_image");
       formData.append('image[file]', saveFile);
       console.log(formData)
       if (formData) {
-        axios.post(process.env.API_DOMAIN_URL + "v1/images", formData, {
+        axios.put(process.env.API_DOMAIN_URL + "v1/images/" + this.user_id, formData, {
           headers: {
             'access-token': VueCookie.get('access-token'),
             'client': VueCookie.get('client'),
@@ -100,12 +103,11 @@ export default {
     // アップロードした画像を表示
     createImage(file) {
       this.saveFile = file
+      console.log("watch file:", file)
       let reader = new FileReader();
       reader.onload = (e) => {
         this.uploadedImage = e.target.result;
       };
-      // User modelとImage modelにfilenameを入れ、両者をヒモ付
-      // filenameはランダムなハッシュ値などにし、独立性を高める
       reader.readAsDataURL(file);
     },
     // get login user id from CustomToolbar
@@ -123,3 +125,16 @@ export default {
   }
 }
 </script>
+
+<style>
+.document-item {
+  height: 200px;
+}
+.document {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border:none;
+}
+</style>

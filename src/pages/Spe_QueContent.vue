@@ -1,13 +1,10 @@
 <template>
   <v-ons-page>
     <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
-        <textarea v-model="content" placeholder="ここに質問を記入してください。"></textarea>
+        <textarea class="question" v-model="content" placeholder="ここに質問を記入してください。"></textarea>
 
         <!-- 1回目の決済 -->
-        <v-ons-button class="stripe-button" modifier="large" style="margin: 10px 0" @click="checkout(user_id, l_price, content, specialist_id)">{{ l_price }} 円で質問</v-ons-button>
-
-        <!-- 登録 -->
-        <a href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_Bn5Ucw2PyuYcXIKM5Bv0EXER5cRLfM4w&scope=read_write">登録</a>
+        <v-ons-button class="stripe-button" modifier="large" style="margin: 0px 0" @click="checkout(user_id, l_price, content, specialist_id)">{{ l_price }} 円で質問</v-ons-button>
 
   </v-ons-page>
 </template>
@@ -93,4 +90,11 @@ export default {
 </script>
 
 <style>
+.question {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: 40%;
+  margin: 20px 0 10px 0;
+}
 </style>
