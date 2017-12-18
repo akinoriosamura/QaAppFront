@@ -1,7 +1,8 @@
 <template>
   <v-ons-page>
     <v-ons-card v-show="results" style="height:100%;text-align:center;">
-      <img :src="uploadedImage">
+      <img v-if="uploadedImage!=''" :src="uploadedImage" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
+      <img v-else :src="results.image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
       <div class="title" style="text-align=center center">
         {{ results.name }}
       </div>
@@ -13,7 +14,7 @@
           <v-ons-list-item>{{ results.l_price }}</v-ons-list-item>
         </v-ons-list>
       </div>
-      <v-ons-button modifier="large" style="margin: 10px 0" @click="push(user_id, results.name, results.image, results.document, results.l_price)">プロフィール編集</v-ons-button>
+      <v-ons-button modifier="large" style="margin: 10px 0" @click="push(user_id, results.name, results.image, results.document, results.l_price, uploadedImage)">プロフィール編集</v-ons-button>
     </v-ons-card>
   </v-ons-page>
 </template>
@@ -30,7 +31,6 @@ export default {
       results: '',
       profile_image: '',
       user_id: -1,
-      image: '',
       uploadedImage: ''
     };
   },
@@ -61,13 +61,15 @@ export default {
       })
       .then(response => {
         console.log('getImage:', response.data)
-        // convert arraybuffer to blob for showing
-        let blob = new Blob([response.data], {type: "image/png" });
-        this.createImage(blob)
+        if (response.data["byteLength"] > 0) {
+          // convert arraybuffer to blob for showing
+          let blob = new Blob([response.data], {type: "image/png" });
+          this.createImage(blob)
+        }
         this.$emit('refresh')
       })
     },
-    push(user_id, name, image, document, l_price) {
+    push(user_id, name, image, document, l_price, uploadedImage) {
       this.$store.commit('navigator/push', {
         extends: EditProfile,
         data() {
@@ -78,6 +80,7 @@ export default {
             image: image,
             document: document,
             l_price: l_price,
+            uploadedImage: uploadedImage,
             // toolbarへの継承データ
             toolbarInfo: {
               backLabel: 'プロフィール',
@@ -100,8 +103,8 @@ export default {
     createImage(file) {
       console.log("watch file:", file)
       let reader = new FileReader();
-      reader.onload = function() {
-        this.uploadedImage = reader.result;
+      reader.onload = (e) => {
+        this.uploadedImage = e.target.result;
       };
       reader.readAsDataURL(file);
     }

@@ -3,7 +3,7 @@
     <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
     <v-ons-card style="height:100%;text-align:center;">
       <div class="img">
-        <img v-if="uploadedImage" :src="uploadedImage" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
+        <img v-if="uploadedImage!=''" :src="uploadedImage" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
         <img v-else :src="image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
       </div>
       <div class="upload">
