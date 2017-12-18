@@ -42,15 +42,21 @@
         }, 500);
       },
       receiveMessage(rec) {
+        // responseを持ち、かつstripe登録時以外のとき、cookie更新。
+        // stripe更新時のみrec.data['data']['id']==null(他SNS登録のときは要確認)
+        console.log("receiveMessage")
+        console.log(rec.data)
         if (rec.data != '') {
           if (rec.data['type'] == 'login') {
-            this.userName = rec.data['data']['name'];
-            VueCookie.set('access-token', rec.data['data']['auth_token']);
-            VueCookie.set('client', rec.data['data']['client_id']);
-            VueCookie.set('uid', rec.data['data']['uid']);
-            VueCookie.set('name', rec.data['data']['name']);
-            VueCookie.set('id', rec.data['data']['id']);
-            this.$store.commit('set', true);
+            if (rec.data['data']['id'] != null) {
+              this.userName = rec.data['data']['name'];
+              VueCookie.set('access-token', rec.data['data']['auth_token']);
+              VueCookie.set('client', rec.data['data']['client_id']);
+              VueCookie.set('uid', rec.data['data']['uid']);
+              VueCookie.set('name', rec.data['data']['name']);
+              VueCookie.set('id', rec.data['data']['id']);
+              this.$store.commit('set', true);
+            }
           }
           // pass user id to parent page
           this.$emit('setId-event', VueCookie.get('id'))
@@ -79,7 +85,12 @@
         this.$emit('logout-event')
       },
       register() {
-        var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe', "_blank", "location=yes");
+        var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe_connect', "_blank", "location=yes");
+
+        var messanger = setInterval(function() {
+          var message = 'requestCredentials';
+          ref.postMessage(message, process.env.API_DOMAIN_URL);
+        }, 500);
       }
     },
     created() {
