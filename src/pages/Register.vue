@@ -1,7 +1,7 @@
 <template>
   <v-ons-page>
     <v-ons-card v-show="results" style="height:100%;text-align:center;">
-      <img :src="results.image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
+      <img :src="uploadedImage">
       <div class="title" style="text-align=center center">
         {{ results.name }}
       </div>
@@ -28,12 +28,14 @@ export default {
   data() {
     return {
       results: '',
+      profile_image: '',
       user_id: -1,
-      image: ''
+      image: '',
+      uploadedImage: ''
     };
   },
   methods: {
-    getInfo() {
+    getUserInfo() {
       axios.get(process.env.API_DOMAIN_URL + "v1/users/" + this.user_id, {
         headers: {
           'access-token': VueCookie.get('access-token'),
@@ -43,10 +45,27 @@ export default {
         }
       })
       .then(response => {
+        console.log('getInfo:', response.data)
         Vue.set(this, 'results', response.data["user"])
         this.$emit('refresh')
       })
-      //　this.createImage(this.results.image)
+    },
+    getImage() {
+      axios.get(process.env.API_DOMAIN_URL + "v1/images/" + this.user_id, {
+        responseType: 'arraybuffer',
+        headers: {
+          'access-token': VueCookie.get('access-token'),
+          'client': VueCookie.get('client'),
+          'uid': VueCookie.get('uid')
+        }
+      })
+      .then(response => {
+        console.log('getImage:', response.data)
+        // convert arraybuffer to blob for showing
+        let blob = new Blob([response.data], {type: "image/png" });
+        this.createImage(blob)
+        this.$emit('refresh')
+      })
     },
     push(user_id, name, image, document, l_price) {
       this.$store.commit('navigator/push', {
@@ -79,10 +98,12 @@ export default {
     },
     // アップロードした画像を表示
     createImage(file) {
+      console.log("watch file:", file)
       let reader = new FileReader();
-      reader.onload = (e) => {
-        this.image = e.target.result;
+      reader.onload = function() {
+        this.uploadedImage = reader.result;
       };
+      reader.readAsDataURL(file);
     }
   },
   mounted() {
@@ -90,7 +111,8 @@ export default {
     this.$store.watch((state) => state.login, () => {
       if (this.$store.state.login) {
         this.user_id = VueCookie.get('id')
-        this.getInfo()
+        this.getUserInfo()
+        this.getImage()
       }
     })
     // タブが変わった時に、ログアウト状態ならresultsもログアウト状態（null）にする
@@ -102,7 +124,8 @@ export default {
     // 編集後プロフィール更新
     this.$store.watch((state) => this.$store.state.navigator.stack, () => {
       if (this.$store.state.login && this.$store.state.tabbar.index==3) {
-        this.getInfo()
+        this.getUserInfo()
+        this.getImage()
       }
     })
   }
