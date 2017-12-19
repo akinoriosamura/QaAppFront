@@ -49,7 +49,8 @@ export default {
         headers: {
           'access-token': VueCookie.get('access-token'),
           'client': VueCookie.get('client'),
-          'uid': VueCookie.get('uid')
+          'uid': VueCookie.get('uid'),
+          'content-type': 'application/json'
         }
       })
       .then(response => {
@@ -68,7 +69,8 @@ export default {
         headers: {
           'access-token': VueCookie.get('access-token'),
           'client': VueCookie.get('client'),
-          'uid': VueCookie.get('uid')
+          'uid': VueCookie.get('uid'),
+          'content-type': 'application/json'
         }
       })
       .then(response => {
