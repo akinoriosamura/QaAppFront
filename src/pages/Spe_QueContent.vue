@@ -44,8 +44,7 @@ export default {
                   headers: {
                   'access-token': VueCookie.get('access-token'),
                   'client': VueCookie.get('client'),
-                  'uid': VueCookie.get('uid'),
-                  'content-type': 'application/json'
+                  'uid': VueCookie.get('uid')
                 }
               })
             .then(response => {
@@ -56,12 +55,12 @@ export default {
             });
           }
         });
-          this.setContent(user_id, content, specialist_id)
+          this.setContent(user_id, content, specialist_id, l_price)
       }
     },
-    setContent(user_id, content, specialist_id) {
+    setContent(user_id, content, specialist_id, price) {
       alert("paid")
-      const data = { user_id: user_id, content: content, target_id: specialist_id}
+      const data = { user_id: user_id, content: content, target_id: specialist_id, price: price}
       console.log(data);
       axios.post(process.env.API_DOMAIN_URL + "v1/posts", data, {
             headers: {

@@ -16,7 +16,7 @@
 
         <v-ons-page>
           <v-ons-list>
-            <v-ons-list-item v-for="myanswer in myanswers" :key="myanswer.id" @click="push_A(myanswer.id, myanswer.content, user_id)" tappable>
+            <v-ons-list-item v-for="myanswer in myanswers" :key="myanswer.id" @click="push_A(myanswer.id, myanswer.user_id, myanswer.price, myanswer.content, user_id)" tappable>
               {{ myanswer.content }}
             </v-ons-list-item>
           </v-ons-list>
@@ -98,7 +98,7 @@ export default {
         }
       });
     },
-    push_A(post_id, content, user_id) {
+    push_A(post_id, post_user_id, price, content, user_id) {
       this.$store.commit('navigator/push', {
         extends: MyQA_A,
         data() {
@@ -106,6 +106,8 @@ export default {
             // Questions_detailへの継承データ
             user_id: user_id,
             post_id: post_id,
+            post_user_id: post_user_id,
+            price: price,
             content: content,
             // toolbarへの継承データ
             toolbarInfo: {

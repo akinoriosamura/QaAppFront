@@ -15,7 +15,7 @@
         <div class="title"> 回答 </div>
         <textarea v-model="answer" placeholder="ここに回答を記入してください。"></textarea>
 
-        <v-ons-button modifier="large" style="margin: 10px 0" @click="setAnswer(answer, post_id)">回答</v-ons-button>
+        <v-ons-button modifier="large" style="margin: 10px 0" @click="setAnswer(answer, post_id, post_user_id, price)">回答</v-ons-button>
       </v-ons-card>
   </v-ons-page>
 </template>
@@ -31,13 +31,15 @@ export default {
       results: '',
       user_id: -1,
       post_id: -1,
+      post_user_id: -1,
+      price: -1,
       content: "not get",
       answer: ""
     };
   },
   methods: {
     getAnswer() {
-      console.log("setuser in myqaq getanswer")
+      console.log("setuser in myqaq getAnswer")
       console.log(this.user_id)
       // post_controllerにより、post_に紐づくcommentをpost_idを元に取る。
       axios.get(process.env.API_DOMAIN_URL + "v1/posts/" + this.post_id, {
@@ -52,7 +54,7 @@ export default {
         this.$emit('refresh')
       })
     },
-    setAnswer(answer, post_id) {
+    setAnswer(answer, post_id, post_user_id, price) {
       if (!answer) {
         alert('回答を入力してください。')
       } else {
@@ -68,10 +70,30 @@ export default {
           })
         .then(response => {
           console.log('body:', response.data)
+          this.charge(post_user_id, price, this.user_id)
         })
         // pop navigator stack and back to previous page
         this.$store.commit('navigator/pop')
       }
+    },
+    charge(post_user_id, price, specialist_id) {
+      // 支払い
+      const data = { post_user_id: post_user_id, price: price, specialist_id: specialist_id }
+      console.log("data", data)
+      // POST token and pay with connect
+      axios.post(process.env.API_DOMAIN_URL + "v1/charges/charge", data, {
+            headers: {
+            'access-token': VueCookie.get('access-token'),
+            'client': VueCookie.get('client'),
+            'uid': VueCookie.get('uid')
+          }
+        })
+      .then(response => {
+        console.log('body:', response.data)
+      })
+      .catch( (response) => {
+        console.error('error:', response);
+      });
     },
     // get login user id from CustomToolbar
     setUserId(user_id) {
