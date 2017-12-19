@@ -10,11 +10,10 @@
       <v-ons-card v-if="results">
             <v-ons-button v-if="user_id == -1" modifier="large" style="margin: 10px 0">ログインしてください</v-ons-button>
           <!-- 質問者と回答者、閲覧料支払い済み者（view = true）のみ回答を閲覧可能 -->
-          <div class="answer" v-else-if="user_id==post_user_id || user_id==results.user_id">
+          <div class="answer" v-else>
             <div class="title"> 回答 </div>
             <div class="content">{{ results.content }}</div>
           </div>
-          <v-ons-button v-else modifier="large" style="margin: 10px 0" @click="openAnswer(results.user_id)">閲覧</v-ons-button>
       </v-ons-card>
       <v-ons-card v-else>
           <div class="title"> 回答 </div>
@@ -63,10 +62,6 @@ export default {
     // logoutを押した時にhomeへリダイレクト
     redirectHome() {
       this.$store.commit('navigator/reset')
-    },
-    openAnswer(user_id) {
-      // ここに決済のフローを書く。今は閲覧フローを見える化するために回答user_idをthis.user_idに代入している。（後に要削除）
-      this.user_id = user_id
     }
   },
   mounted() {
