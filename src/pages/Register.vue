@@ -15,6 +15,8 @@
         </v-ons-list>
       </div>
       <v-ons-button modifier="large" style="margin: 10px 0" @click="push(user_id, results.name, results.image, results.document, results.l_price, uploadedImage)">プロフィール編集</v-ons-button>
+      <v-ons-button modifier="large" style="margin: 6px 0" @click="cardRegister(user_id, role)">質問者登録</v-ons-button>
+      <v-ons-button v-show="role == 'member' || role == 'questioner'" modifier="large" style="margin: 6px 0" @click="cardRegister(user_id, role)">回答者登録</v-ons-button>
     </v-ons-card>
   </v-ons-page>
 </template>
@@ -31,7 +33,8 @@ export default {
       results: '',
       profile_image: '',
       user_id: -1,
-      uploadedImage: ''
+      uploadedImage: '',
+      role: ''
     };
   },
   methods: {
@@ -90,6 +93,44 @@ export default {
         }
       });
     },
+    cardRegister(user_id, role) {
+      // 質問料金設定 & token獲得 &　支払い
+      this.$checkout.open({
+        name: 'カード情報登録',
+        currency: 'jpy',
+        token(token) {
+          console.log("token")
+          console.log(user_id)
+          token.user_id = user_id
+          console.log(token)
+          // POST token and pay with connect
+          axios.post(process.env.API_DOMAIN_URL + "v1/charges", token, {
+                headers: {
+                'access-token': VueCookie.get('access-token'),
+                'client': VueCookie.get('client'),
+                'uid': VueCookie.get('uid'),
+                'content-type': 'application/json'
+              }
+            })
+          .then(response => {
+            console.log('body:', response.data)
+            if (role == 'member') {
+              role = 'questioner'
+            } else if (role == 'specialist') {
+              role = 'bothqs'
+            }
+            console.log("role after card register", role)
+            console.log("role after card register", this.role)
+            Vue.set(this, 'role', role)
+            console.log("role after card register", this.role)
+          })
+          .catch( (response) => {
+            console.error('error:', response);
+            alert("カード情報登録ができませんでした。")
+          });
+        }
+      });
+    },
     // get login user id from CustomToolbar
     setUserId(user_id) {
       this.user_id = user_id
@@ -129,6 +170,14 @@ export default {
       if (this.$store.state.login && this.$store.state.tabbar.index==3) {
         this.getUserInfo()
         this.getImage()
+      }
+    })
+    // タブ遷移後role更新
+    this.$store.watch((state) => this.$store.state.tabbar.index, () => {
+      if (this.$store.state.login && this.$store.state.tabbar.index==3) {
+        console.log("role in register", this.role)
+        this.role = this.$store.state.role
+        console.log("role in register", this.role)
       }
     })
   }

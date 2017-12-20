@@ -55,45 +55,50 @@ export default {
   methods: {
     edit(user_id, name, document, l_price, saveFile) {
       //save profile info othar than image
-      const data = { user_id: user_id, name: name, document: document, l_price: l_price }
-      console.log(data)
-      axios.put(process.env.API_DOMAIN_URL + "v1/users/" + this.user_id, data, {
-        headers: {
-          'access-token': VueCookie.get('access-token'),
-          'client': VueCookie.get('client'),
-          'uid': VueCookie.get('uid'),
-          'content-type': 'application/json'
-        }
-      })
-      .then(response => {
-        console.log('body:', response.data)
-      })
-      // save imagge
-      // {filename: file.name, file: file}
-      console.log("formData1")
-      const formData = new FormData();
-      formData.append('image[user_id]', user_id);
-      formData.append('image[filename]', "profile_image");
-      formData.append('image[file]', saveFile);
-      console.log(formData)
-      if (formData) {
-        axios.put(process.env.API_DOMAIN_URL + "v1/images/" + this.user_id, formData, {
+      // 最低金額が半角数字以外ならアラート
+      if (l_price.match(/[^0-9]+/)) {
+        alert("半角数字のみを入力してください。");
+      } else {
+        const data = { user_id: user_id, name: name, document: document, l_price: l_price }
+        console.log(data)
+        axios.put(process.env.API_DOMAIN_URL + "v1/users/" + this.user_id, data, {
           headers: {
             'access-token': VueCookie.get('access-token'),
             'client': VueCookie.get('client'),
             'uid': VueCookie.get('uid'),
-            'content-type': 'multipart/form-data'
+            'content-type': 'application/json'
           }
         })
         .then(response => {
           console.log('body:', response.data)
         })
-        .catch( (response) => {
-          console.error('error:', response);
-        });
+        // save imagge
+        // {filename: file.name, file: file}
+        console.log("formData1")
+        const formData = new FormData();
+        formData.append('image[user_id]', user_id);
+        formData.append('image[filename]', "profile_image");
+        formData.append('image[file]', saveFile);
+        console.log(formData)
+        if (formData) {
+          axios.put(process.env.API_DOMAIN_URL + "v1/images/" + this.user_id, formData, {
+            headers: {
+              'access-token': VueCookie.get('access-token'),
+              'client': VueCookie.get('client'),
+              'uid': VueCookie.get('uid'),
+              'content-type': 'multipart/form-data'
+            }
+          })
+          .then(response => {
+            console.log('body:', response.data)
+          })
+          .catch( (response) => {
+            console.error('error:', response);
+          });
+        }
+        // pop navigator stack and back to previous page
+        this.$store.commit('navigator/pop')
       }
-      // pop navigator stack and back to previous page
-      this.$store.commit('navigator/pop')
     },
     // アップロードしたデータにファイルチェンジ
     onFileChange(e) {

@@ -2,11 +2,15 @@ export default {
   strict: true,
   state: {
     login: false,
-    results: ''
+    results: '',
+    role: ''
   },
   mutations: {
     set(state, login) {
       state.login = login
+    },
+    changeRole(state, role) {
+      state.role = role
     }
   },
   modules: {

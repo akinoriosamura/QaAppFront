@@ -22,7 +22,9 @@
 </template>
 
 <script>
+  import Vue from 'vue';
   import VueCookie from 'cookie-in-vue'
+  import axios from 'axios';
 
   export default {
     props: ['title', 'backLabel'],
@@ -56,11 +58,31 @@
               VueCookie.set('name', rec.data['data']['name']);
               VueCookie.set('id', rec.data['data']['id']);
               this.$store.commit('set', true);
+              this.getUserInfo(rec.data['data']['id'])
             }
           }
           // pass user id to parent page
           this.$emit('setId-event', VueCookie.get('id'))
         }
+      },
+      getUserInfo(user_id) {
+        axios.get(process.env.API_DOMAIN_URL + "v1/users/" + user_id, {
+          headers: {
+            'access-token': VueCookie.get('access-token'),
+            'client': VueCookie.get('client'),
+            'uid': VueCookie.get('uid'),
+            'content-type': 'application/json'
+          }
+        })
+        .then(response => {
+          console.log('getInfo:', response.data)
+          Vue.set(this, 'results', response.data["user"])
+          console.log("role in customtoolbar");
+          console.log("before role", this.$store.state.role);
+          this.$store.commit('changeRole', response.data["user"]["role"]);
+          console.log("updated role", this.$store.state.role);
+          this.$emit('refresh')
+        })
       },
       logout() {
         VueCookie.remove('access-token');
@@ -75,6 +97,7 @@
         // pass user id -1 to parent page for logout user
         this.$emit('setId-event', -1)
         this.$store.commit('set', false)
+        this.$store.commit('changeRole', -1)
 
         this.userName = ''
 
@@ -85,7 +108,8 @@
         this.$emit('logout-event')
       },
       register() {
-        var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe_connect', "_blank", "location=yes");
+        var user_id = VueCookie.get('id')
+        var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe_connect?user_id=' + user_id, "_blank", "location=yes");
 
         var messanger = setInterval(function() {
           var message = 'requestCredentials';
@@ -115,6 +139,7 @@
       console.log(this.$store.state.login)
       if (this.$store.state.login) {
         this.userName = VueCookie.get('name');
+
       } else {
         this.userName = ''
       }
