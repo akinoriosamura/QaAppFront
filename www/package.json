@@ -1,0 +1,15 @@
+{
+  "name": "onsenui-v2-vue-minimum",
+  "version": "2.4.0+20170901.1",
+  "description": "",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "cookie-in-vue": "^0.1.8",
+    "onsenui": "2.4.x",
+    "vue": "2.3.x",
+    "vue-loader": "11.0.0",
+    "vue-onsenui": "2.0.0",
+    "vue-template-compiler": "2.3.x",
+    "vuex": "^3.0.1"
+  }
+}
