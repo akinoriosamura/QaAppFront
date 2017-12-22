@@ -143,7 +143,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         'API_DOMAIN_URL': JSON.stringify('https://qa-app-server.herokuapp.com/'),
-        'FRONT_DOMAIN_URL': JSON.stringify('https://qaprotoui.herokuapp.com/')
+        'FRONT_DOMAIN_URL': JSON.stringify('https://qa-app-front.herokuapp.com/')
       }
     })
   ],
