@@ -25,7 +25,7 @@ Vue.component('custom-toolbar', CustomToolbar); // Common toolbar
 // by the options in the .open(options) 
 // function.
 const options = {
-  key: 'pk_test_OMdgx9Y4igUKyIc16n2tuudP',
+  key: process.env.STRIPE_PUBLISH,
   locale: 'auto',
   panelLabel: '{{amount}}'
 }

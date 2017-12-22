@@ -142,6 +142,9 @@ module.exports = {
     new ProgressBarPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
+        // stripe publish key
+        'STRIPE_PUBLISH': JSON.stringify('pk_test_OMdgx9Y4igUKyIc16n2tuudP'),
+        // domain url
         'API_DOMAIN_URL': JSON.stringify('https://qa-app-server.herokuapp.com/'),
         'FRONT_DOMAIN_URL': JSON.stringify('https://qa-app-front.herokuapp.com/')
       }
