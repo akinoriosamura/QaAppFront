@@ -96,6 +96,12 @@ export default{
       }
       this.getUsers();
     })
+    // タブ遷移後データ更新
+    this.$store.watch((state) => this.$store.state.tabbar.index, () => {
+      if (this.$store.state.login && this.$store.state.tabbar.index==1) {
+        this.getUsers();
+      }
+    })
   }
 }
 </script>

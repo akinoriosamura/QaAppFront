@@ -6,16 +6,14 @@
           {{ backLabel }}
         </v-ons-back-button>
       </slot>
-        <!-- 登録 -->
-        <v-ons-button @click="register">登録</v-ons-button>
     </div>
     <div class="center"><slot>{{ title }}</slot></div>
     <div class="right">
       <v-ons-button v-if="userName == ''" @click="login">
-        <v-ons-icon icon="md-facebook"></v-ons-icon>
+        Facebook登録/ログイン
       </v-ons-button>
       <v-ons-button v-else @click="logout">
-        {{ userName }}
+        ログアウト
       </v-ons-button>
     </div>
   </v-ons-toolbar>
@@ -50,20 +48,18 @@
         console.log(rec.data)
         if (rec.data != '') {
           if (rec.data['type'] == 'login') {
-            if (rec.data['data']['id'] != null) {
-              this.userName = rec.data['data']['name'];
-              VueCookie.set('access-token', rec.data['data']['auth_token']);
-              VueCookie.set('client', rec.data['data']['client_id']);
-              VueCookie.set('uid', rec.data['data']['uid']);
-              VueCookie.set('name', rec.data['data']['name']);
-              VueCookie.set('id', rec.data['data']['id']);
-              this.$store.commit('set', true);
-              this.getUserInfo(rec.data['data']['id'])
-            }
+            this.userName = rec.data['data']['name'];
+            VueCookie.set('access-token', rec.data['data']['auth_token']);
+            VueCookie.set('client', rec.data['data']['client_id']);
+            VueCookie.set('uid', rec.data['data']['uid']);
+            VueCookie.set('name', rec.data['data']['name']);
+            VueCookie.set('id', rec.data['data']['id']);
+            this.$store.commit('set', true);
+            this.getUserInfo(rec.data['data']['id'])
           }
-          // pass user id to parent page
-          this.$emit('setId-event', VueCookie.get('id'))
         }
+        // pass user id to parent page
+        this.$emit('setId-event', VueCookie.get('id'))
       },
       getUserInfo(user_id) {
         axios.get(process.env.API_DOMAIN_URL + "v1/users/" + user_id, {
@@ -106,15 +102,6 @@
         console.log(this.userName)
         // send event redirecting home
         this.$emit('logout-event')
-      },
-      register() {
-        var user_id = VueCookie.get('id')
-        var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe_connect?user_id=' + user_id, "_blank", "location=yes");
-
-        var messanger = setInterval(function() {
-          var message = 'requestCredentials';
-          ref.postMessage(message, process.env.API_DOMAIN_URL);
-        }, 500);
       }
     },
     created() {

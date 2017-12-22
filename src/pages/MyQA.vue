@@ -126,7 +126,7 @@ export default {
     this.$store.watch((state) => state.login, () => {
       if (this.$store.state.login) {
         this.user_id = VueCookie.get('id')
-        console.log("myqaaaaaaaaaa after user_id")
+        console.log("myqa after user_id")
         console.log(this.user_id)
         this.getMyquestions()
         this.getMyanswers()
@@ -135,8 +135,15 @@ export default {
     // タブが変わった時に、ログアウト状態ならresultsもログアウト状態（null）にする
     this.$store.watch((state) => this.$store.state.tabbar.index, () => {
       if (!this.$store.state.login) {
-        this.myquestions = this.$store.state.myquestions
-        this.myanswers = this.$store.state.myanswers
+        this.myquestions = ''
+        this.myanswers = ''
+      }
+    })
+    // タブ遷移後データ更新
+    this.$store.watch((state) => this.$store.state.tabbar.index, () => {
+      if (this.$store.state.login && this.$store.state.tabbar.index==2) {
+        this.getMyquestions()
+        this.getMyanswers()
       }
     })
   }

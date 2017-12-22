@@ -14,7 +14,7 @@
                 <v-ons-list-header style="font-weight:bold">最低質問金額 {{ l_price }}円</v-ons-list-header>
                 <v-ons-input v-model="price" placeholder="質問金額を入力"></v-ons-input>
                  <v-ons-button v-if="role == ''" modifier="large" style="margin: 6px 0">ログインしてください</v-ons-button>
-                 <v-ons-button v-else-if="role == 'member' || role == 'specialist'" modifier="large" style="margin: 6px 0" @click="toRegister">カード情報登録へ</v-ons-button>
+                 <v-ons-button v-else-if="role == 'member' || role == 'specialist'" modifier="large" style="margin: 6px 0" @click="toRegister">質問者登録へ</v-ons-button>
                 <v-ons-button v-else modifier="large" style="margin: 6px 0" @click="push(user_id, specialist_id, l_price, price)">この専門家に質問</v-ons-button>
               </div>
             </v-ons-list>
