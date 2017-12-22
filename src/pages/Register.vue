@@ -15,8 +15,8 @@
         </v-ons-list>
       </div>
       <v-ons-button modifier="large" style="margin: 10px 0" @click="push(user_id, results.name, results.image, results.document, results.l_price, uploadedImage)">プロフィール編集</v-ons-button>
-      <v-ons-button modifier="large" style="margin: 6px 0" @click="cardRegister(user_id, role)">質問者登録</v-ons-button>
-      <v-ons-button v-show="role == 'member' || role == 'questioner'" modifier="large" style="margin: 6px 0" @click="cardRegister(user_id, role)">回答者登録</v-ons-button>
+      <v-ons-button v-show="role == 'member' || role == 'specialist'" modifier="large" style="margin: 6px 0" @click="cardRegister(user_id, role)">質問者登録</v-ons-button>
+      <v-ons-button v-show="role == 'member' || role == 'questioner'" modifier="large" style="margin: 6px 0" @click="register()">回答者登録</v-ons-button>
     </v-ons-card>
   </v-ons-page>
 </template>
@@ -93,8 +93,33 @@ export default {
         }
       });
     },
+    uploadRole(role) {
+      console.log("uploadRole", role)
+      console.log("uploadRole", this.$store.state.role)
+      this.$store.commit('changeRole', role);
+      console.log("uploadRole", this.$store.state.role)
+      const data = { role: role }
+      console.log(data)
+      if (role) {
+        axios.put(process.env.API_DOMAIN_URL + "v1/users/" + this.user_id, data, {
+          headers: {
+            'access-token': VueCookie.get('access-token'),
+            'client': VueCookie.get('client'),
+            'uid': VueCookie.get('uid'),
+            'content-type': 'application/json'
+          }
+        })
+        .then(response => {
+          console.log('body:', response.data)
+        })
+        .catch( (response) => {
+          console.error('error:', response);
+        })
+      }
+    },
     cardRegister(user_id, role) {
       // 質問料金設定 & token獲得 &　支払い
+      var vm = this; // Keep reference to viewmodel object
       this.$checkout.open({
         name: 'カード情報登録',
         currency: 'jpy',
@@ -123,6 +148,7 @@ export default {
             console.log("role after card register", this.role)
             Vue.set(this, 'role', role)
             console.log("role after card register", this.role)
+            vm.uploadRole(this.role);
           })
           .catch( (response) => {
             console.error('error:', response);
@@ -130,6 +156,30 @@ export default {
           });
         }
       });
+    },
+    register() {
+      var user_id = VueCookie.get('id')
+      var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe_connect?user_id=' + user_id, "_blank", "location=yes");
+
+      var messanger = setInterval(function() {
+        var message = 'requestCredentials';
+        ref.postMessage(message, process.env.API_DOMAIN_URL);
+      }, 500);
+    },
+    receiveMessage(rec) {
+      // regsterのあとに、role更新&保存
+      console.log("receiveMessage")
+      console.log(rec.data)
+      if (rec.data != '') {
+        console.log("this.role", this.role)
+        if (this.role == 'member') {
+          this.role = 'specialist'
+        } else if (this.role == 'questioner') {
+          this.role = 'bothqs'
+        }
+        console.log("this.role", this.role)
+        this.uploadRole(this.role)
+      }
     },
     // get login user id from CustomToolbar
     setUserId(user_id) {
@@ -149,6 +199,14 @@ export default {
       };
       reader.readAsDataURL(file);
     }
+  },
+  // in creating register window
+  created() {
+    window.addEventListener('message', this.receiveMessage, false);
+  },
+  // in destoying register window
+  destroyed() {
+    window.removeEventListener('message', this.receiveMessage);
   },
   mounted() {
     // ログインしたらuser_idを更新
