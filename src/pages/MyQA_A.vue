@@ -11,9 +11,9 @@
           <div class="title"> 回答 </div>
           <div class="content">{{ results.content }}</div>
       </v-ons-card>
-      <v-ons-card v-else>
+      <v-ons-card class="answer_card" v-else>
         <div class="title"> 回答 </div>
-        <textarea v-model="answer" placeholder="ここに回答を記入してください。"></textarea>
+        <textarea class="answer" v-model="answer" placeholder="ここに回答を記入してください。"></textarea>
 
         <v-ons-button modifier="large" style="margin: 10px 0" @click="setAnswer(answer, post_id, post_user_id, price)">回答</v-ons-button>
       </v-ons-card>
@@ -126,4 +126,17 @@ ons-card {
 .card__title, .card--material__title {
   font-size: 20px;
 }
+
+.answer_card {
+  height: 80%;
+}
+
+.answer {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: 60%;
+  margin: 20px 0 10px 0;
+}
+
 </style>

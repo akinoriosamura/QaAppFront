@@ -58,6 +58,8 @@ export default {
       // 最低金額が半角数字以外ならアラート
       if (l_price.match(/[^0-9]+/)) {
         alert("半角数字のみを入力してください。");
+      } else if (l_price <= 50) {
+        alert("50円以上で設定してください。")
       } else {
         const data = { user_id: user_id, name: name, document: document, l_price: l_price }
         console.log(data)

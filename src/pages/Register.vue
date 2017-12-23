@@ -162,7 +162,7 @@ export default {
     register() {
       var uid = VueCookie.get('uid')
       var info = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, title=no';
-      var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe_connect?uid=' + uid, "_blank", info);
+      var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe_connect?scope=read_write&stripe_landing=register&uid=' + uid, "_blank", info);
 
       var messanger = setInterval(function() {
         var message = 'requestCredentials';
