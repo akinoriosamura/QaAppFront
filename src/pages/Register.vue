@@ -166,19 +166,24 @@ export default {
         ref.postMessage(message, process.env.API_DOMAIN_URL);
       }, 500);
     },
-    receiveMessage(rec) {
+    receiveRegMessage(rec) {
       // regsterのあとに、role更新&保存
-      console.log("receiveMessage")
+      console.log("receiveRegMessage")
       console.log(rec.data)
       if (rec.data != '') {
-        console.log("this.role", this.role)
-        if (this.role == 'member') {
-          this.role = 'specialist'
-        } else if (this.role == 'questioner') {
-          this.role = 'bothqs'
+        if (rec.data['type'] == 'login') {
+          // stripe登録のときのみname='stripe_connect'を持つ。これにより、Custometoolbarのcreateとの判別を行う。
+          if (rec.data['data']['name']=='stripe_connect') {
+            console.log("this.role", this.role)
+            if (this.role == 'member') {
+              this.role = 'specialist'
+            } else if (this.role == 'questioner') {
+              this.role = 'bothqs'
+            }
+            console.log("this.role", this.role)
+            this.uploadRole(this.role)
+          }
         }
-        console.log("this.role", this.role)
-        this.uploadRole(this.role)
       }
     },
     // get login user id from CustomToolbar
@@ -202,11 +207,11 @@ export default {
   },
   // in creating register window
   created() {
-    window.addEventListener('message', this.receiveMessage, false);
+    window.addEventListener('message', this.receiveRegMessage, false);
   },
   // in destoying register window
   destroyed() {
-    window.removeEventListener('message', this.receiveMessage);
+    window.removeEventListener('message', this.receiveRegMessage);
   },
   mounted() {
     // ログインしたらuser_idを更新

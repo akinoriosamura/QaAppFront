@@ -29,6 +29,7 @@
     data() {
       return {
         userName: '',
+        user_id: '',
         results: []
       };
     },
@@ -41,27 +42,33 @@
           ref.postMessage(message, process.env.API_DOMAIN_URL);
         }, 500);
       },
-      receiveMessage(rec) {
+      receiveLoginMessage(rec) {
         // responseを持ち、かつstripe登録時以外のとき、cookie更新。
         // stripe更新時のみrec.data['data']['id']==null(他SNS登録のときは要確認)
-        console.log("receiveMessage")
+        console.log("receiveLoginMessage")
         console.log(rec.data)
         if (rec.data != '') {
           if (rec.data['type'] == 'login') {
-            this.userName = rec.data['data']['name'];
-            VueCookie.set('access-token', rec.data['data']['auth_token']);
-            VueCookie.set('client', rec.data['data']['client_id']);
-            VueCookie.set('uid', rec.data['data']['uid']);
-            VueCookie.set('name', rec.data['data']['name']);
-            VueCookie.set('id', rec.data['data']['id']);
-            this.$store.commit('set', true);
-            this.getUserInfo(rec.data['data']['id'])
+            // stripe登録のときのみname="stripe_connect"を持つ。これにより、register.vueの登録createとの判別を行う。
+            if (rec.data['data']['name'] != "stripe_connect") {
+              this.userName = rec.data['data']['name'];
+              this.user_id = rec.data['data']['id'];
+              VueCookie.set('access-token', rec.data['data']['auth_token']);
+              VueCookie.set('client', rec.data['data']['client_id']);
+              VueCookie.set('uid', rec.data['data']['uid']);
+              VueCookie.set('name', rec.data['data']['name']);
+              VueCookie.set('id', rec.data['data']['id']);
+              this.$store.commit('set', true);
+              console.log("user_id in CustomToolbar.vue 1:", this.user_id)
+              this.getUserInfo(this.user_id)
+            }
           }
+          // pass user id to parent page
+          this.$emit('setId-event', VueCookie.get('id'))
         }
-        // pass user id to parent page
-        this.$emit('setId-event', VueCookie.get('id'))
       },
       getUserInfo(user_id) {
+        console.log("user_id in CustomToolbar.vue 2:", user_id)
         axios.get(process.env.API_DOMAIN_URL + "v1/users/" + user_id, {
           headers: {
             'access-token': VueCookie.get('access-token'),
@@ -105,10 +112,10 @@
       }
     },
     created() {
-      window.addEventListener('message', this.receiveMessage, false);
+      window.addEventListener('message', this.receiveLoginMessage, false);
     },
     destroyed() {
-      window.removeEventListener('message', this.receiveMessage);
+      window.removeEventListener('message', this.receiveLoginMessage);
     },
     mounted() {
       // ログイン状態なら名前を入れる。ログアウト状態ならnilを代入
