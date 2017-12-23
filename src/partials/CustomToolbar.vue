@@ -35,7 +35,8 @@
     },
     methods: {
       login() {
-        var ref = window.open(process.env.API_DOMAIN_URL + 'auth/facebook?auth_origin_url=' + process.env.FRONT_DOMAIN_URL + '&omniauth_window_type=newWindow', "_blank", "location=yes");
+        var info = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, title=no';
+        var ref = window.open(process.env.API_DOMAIN_URL + 'auth/facebook?auth_origin_url=' + process.env.FRONT_DOMAIN_URL + '&omniauth_window_type=newWindow', "_blank", info);
 
         var messanger = setInterval(function() {
           var message = 'requestCredentials';

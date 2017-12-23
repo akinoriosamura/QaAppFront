@@ -96,8 +96,10 @@ export default {
     uploadRole(role) {
       console.log("uploadRole", role)
       console.log("uploadRole", this.$store.state.role)
+      this.role = role
       this.$store.commit('changeRole', role);
       console.log("uploadRole", this.$store.state.role)
+      console.log("uploadRole", this.role)
       const data = { role: role }
       console.log(data)
       if (role) {
@@ -158,8 +160,9 @@ export default {
       });
     },
     register() {
-      var user_id = VueCookie.get('id')
-      var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe_connect?user_id=' + user_id, "_blank", "location=yes");
+      var uid = VueCookie.get('uid')
+      var info = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, title=no';
+      var ref = window.open(process.env.API_DOMAIN_URL + 'auth/stripe_connect?uid=' + uid, "_blank", info);
 
       var messanger = setInterval(function() {
         var message = 'requestCredentials';
