@@ -7,10 +7,21 @@
           <div class="content">{{ content }}</div>
       </v-ons-card>
 
-      <v-ons-card v-if="results">
+      <!-- 編集時編集ボタンと削除ボタン-->
+      <v-ons-card v-if="type=='edit'">
+        <div class="title"> 回答 </div>
+        <textarea class="answer" v-model="answer" placeholder="ここに回答を記入してください。"></textarea>
+        <v-ons-button modifier="large" style="margin: 0px 0" @click="editContent(comment_id, answer)">編集</v-ons-button>
+        <button style="margin: 0px 0" @click="deleteContent(comment_id)">削除</button>
+      </v-ons-card>
+
+      <!-- 回答がある場合、回答を表示-->
+      <v-ons-card v-else-if="results" @click="pushEdit(results.id, results.content)" tappable>
           <div class="title"> 回答 </div>
           <div class="content">{{ results.content }}</div>
       </v-ons-card>
+
+      <!-- 回答がない場合新規作成画面-->
       <v-ons-card class="answer_card" v-else>
         <div class="title"> 回答 </div>
         <textarea class="answer" v-model="answer" placeholder="ここに回答を記入してください。"></textarea>
@@ -25,6 +36,7 @@
 import Vue from 'vue';
 import VueCookie from 'cookie-in-vue';
 import axios from 'axios';
+import MyQA_A from './MyQA_A.vue';
 
 export default {
   data() {
@@ -36,10 +48,66 @@ export default {
       price: -1,
       content: "not get",
       answer: "",
-      role: this.$store.state.role
+      role: this.$store.state.role,
+      comment_id: -1,
+      type: 'create',
     };
   },
   methods: {
+    pushEdit(comment_id, answer) {
+      this.comment_id = comment_id
+      this.answer = answer
+      this.type = "edit"
+    },
+    editContent(comment_id, content) {
+      console.log("editContent")
+      if (!content) {
+        alert('回答を入力してください。')
+      } else {
+        const data = { content: content }
+        console.log(data);
+        axios.put(process.env.API_DOMAIN_URL + "v1/comments/" + comment_id, data, {
+          headers: {
+            'access-token': VueCookie.get('access-token'),
+            'client': VueCookie.get('client'),
+            'uid': VueCookie.get('uid'),
+            'content-type': 'application/json'
+          }
+        })
+        .then(response => {
+          console.log('body:', response.data)
+          alert("編集しました。")
+        })
+        .catch( (response) => {
+          console.error('error:', response);
+          alert("編集に失敗しました。")
+        });
+        // pop navigator stack and back to previous page
+        this.$store.commit('navigator/reset')
+        this.$store.commit('tabbar/set', 2)
+      }
+    },
+    deleteContent(comment_id) {
+      axios.delete(process.env.API_DOMAIN_URL + "v1/comments/" + comment_id, {
+        headers: {
+          'access-token': VueCookie.get('access-token'),
+          'client': VueCookie.get('client'),
+          'uid': VueCookie.get('uid'),
+          'content-type': 'application/json'
+        }
+      })
+      .then(response => {
+        console.log('body:', response.data)
+        alert("削除しました。")
+      })
+      .catch( (response) => {
+        console.error('error:', response);
+        alert("削除に失敗しました。")
+      });
+      // pop navigator stack and back to previous page
+      this.$store.commit('navigator/reset')
+      this.$store.commit('tabbar/set', 2)
+    },
     toRegister(user_id, price, role) {
       this.$store.commit('navigator/reset')
       this.$store.commit('tabbar/set', 3)
