@@ -1,8 +1,8 @@
 <template>
   <v-ons-page>
     <v-ons-card v-show="results" style="height:100%;text-align:center;">
-      <img v-if="uploadedImage!=''" :src="uploadedImage" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
-      <img v-else :src="results.image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
+      <img v-if="uploadedImage!=''" :src="uploadedImage" style="border-radius:50%; height:20%; margin: 0 auto;">
+      <img v-else :src="results.image" style="border-radius:50%; height:20%; margin: 0 auto;">
       <div class="title" style="text-align=center center">
         {{ results.name }}
       </div>
@@ -14,9 +14,9 @@
           <v-ons-list-item>{{ results.l_price }}</v-ons-list-item>
         </v-ons-list>
       </div>
-      <v-ons-button modifier="large" style="margin: 10px 0" @click="push(user_id, results.name, results.image, results.document, results.l_price, uploadedImage)">プロフィール編集</v-ons-button>
-      <v-ons-button v-show="role == 'member' || role == 'specialist'" modifier="large" style="margin: 6px 0" @click="cardRegister(user_id, role)">質問者登録</v-ons-button>
-      <v-ons-button v-show="role == 'member' || role == 'questioner'" modifier="large" style="margin: 6px 0" @click="register()">回答者登録</v-ons-button>
+      <v-ons-button modifier="large" style="margin: 1% 0" @click="push(user_id, results.name, results.image, results.document, results.l_price, uploadedImage)">プロフィール編集</v-ons-button>
+      <v-ons-button v-show="role == 'member' || role == 'specialist'" modifier="large" style="margin: 1% 0" @click="cardRegister(user_id, role)">質問者登録</v-ons-button>
+      <v-ons-button v-show="role == 'member' || role == 'questioner'" modifier="large" style="margin: 1% 0" @click="register()">回答者登録</v-ons-button>
     </v-ons-card>
   </v-ons-page>
 </template>

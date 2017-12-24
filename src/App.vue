@@ -1,6 +1,6 @@
 <template>
   <v-ons-page :style="swipePosition">
-    <custom-toolbar :style="swipeTheme" modifier="white-content" @logout-event="redirectHome">
+    <custom-toolbar modifier="white-content" @logout-event="redirectHome">
       {{ title }}
     </custom-toolbar>
 
@@ -8,7 +8,6 @@
       swipeable
       :modifier="md ? 'autogrow white-content' : null"
       :on-swipe="md ? onSwipe : null"
-      :tabbar-style="swipeTheme"
       :tabs="tabs"
       :index.sync="index"
     ></v-ons-tabbar>
@@ -87,12 +86,6 @@ export default {
     },
     title() {
       return this.tabs[this.index].title || this.tabs[this.index].label;
-    },
-    swipeTheme() {
-      return this.md && {
-        backgroundColor: `rgb(${this.colors.join(',')})`,
-        transition: `all ${this.animationOptions.duration || 0}s ${this.animationOptions.timing || ''}`
-      }
     },
     swipePosition() {
       return this.md && {

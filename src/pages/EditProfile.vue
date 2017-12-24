@@ -1,15 +1,13 @@
 <template>
   <v-ons-page>
     <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
-    <v-ons-card style="height:100%;text-align:center;">
+    <v-ons-card style="height:120%;text-align:center;">
       <div class="img">
-        <img v-if="uploadedImage!=''" :src="uploadedImage" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
-        <img v-else :src="image" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
+        <img v-if="uploadedImage!=''" :src="uploadedImage" style="border-radius:50%; height:20%; margin: 0 auto;">
+        <img v-else :src="image" style="border-radius:50%; height:20%; margin: 0 auto;">
       </div>
       <div class="upload">
         <input type="file" v-on:change="onFileChange">
-      </div>
-      <div class="title" style="border-radius:50%; height:100px; width:100px; margin: 0 auto;">
       </div>
       <div class="content">
         <v-ons-list>
@@ -29,7 +27,7 @@
           </v-ons-list-item>
         </v-ons-list>
       </div>
-      <v-ons-button modifier="large" style="margin: 10px 0" @click="edit(user_id, name, document, l_price, saveFile)">編集</v-ons-button>
+      <v-ons-button modifier="large" style="margin: 1% 0" @click="edit(user_id, name, document, l_price, saveFile)">編集</v-ons-button>
     </v-ons-card>
   </v-ons-page>
 </template>
@@ -135,7 +133,7 @@ export default {
 
 <style>
 .document-item {
-  height: 200px;
+  height: 200%;
 }
 .document {
   display: inline-block;

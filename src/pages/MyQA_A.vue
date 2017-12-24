@@ -11,8 +11,8 @@
       <v-ons-card v-if="type=='edit'">
         <div class="title"> 回答 </div>
         <textarea class="answer" v-model="answer" placeholder="ここに回答を記入してください。"></textarea>
-        <v-ons-button modifier="large" style="margin: 0px 0" @click="editContent(comment_id, answer)">編集</v-ons-button>
-        <button style="margin: 0px 0" @click="deleteContent(comment_id)">削除</button>
+        <v-ons-button modifier="large" @click="editContent(comment_id, answer)">編集</v-ons-button>
+        <button @click="deleteContent(comment_id)">削除</button>
       </v-ons-card>
 
       <!-- 回答がある場合、回答を表示-->
@@ -26,8 +26,8 @@
         <div class="title"> 回答 </div>
         <textarea class="answer" v-model="answer" placeholder="ここに回答を記入してください。"></textarea>
 
-        <v-ons-button v-if="role == 'member' || role == 'questioner'" modifier="large" style="margin: 6px 0" @click="toRegister">回答者登録へ</v-ons-button>
-        <v-ons-button v-else modifier="large" style="margin: 10px 0" @click="charge(answer, post_id, post_user_id, price)">回答</v-ons-button>
+        <v-ons-button v-if="role == 'member' || role == 'questioner'" modifier="large" style="margin: 1% 0" @click="toRegister">回答者登録へ</v-ons-button>
+        <v-ons-button v-else modifier="large" style="margin: 1% 0" @click="charge(answer, post_id, post_user_id, price)">回答</v-ons-button>
       </v-ons-card>
   </v-ons-page>
 </template>
@@ -213,7 +213,7 @@ ons-card {
   position: relative;
   width: 100%;
   height: 60%;
-  margin: 20px 0 10px 0;
+  margin: 4% 0 2% 0;
 }
 
 </style>
