@@ -15,7 +15,8 @@
         <div class="title"> 回答 </div>
         <textarea class="answer" v-model="answer" placeholder="ここに回答を記入してください。"></textarea>
 
-        <v-ons-button modifier="large" style="margin: 10px 0" @click="setAnswer(answer, post_id, post_user_id, price)">回答</v-ons-button>
+        <v-ons-button v-if="role == 'member' || role == 'questioner'" modifier="large" style="margin: 6px 0" @click="toRegister">回答者登録へ</v-ons-button>
+        <v-ons-button v-else modifier="large" style="margin: 10px 0" @click="charge(answer, post_id, post_user_id, price)">回答</v-ons-button>
       </v-ons-card>
   </v-ons-page>
 </template>
@@ -34,10 +35,15 @@ export default {
       post_user_id: -1,
       price: -1,
       content: "not get",
-      answer: ""
+      answer: "",
+      role: this.$store.state.role
     };
   },
   methods: {
+    toRegister(user_id, price, role) {
+      this.$store.commit('navigator/reset')
+      this.$store.commit('tabbar/set', 3)
+    },
     getAnswer() {
       console.log("setuser in myqaq getAnswer")
       console.log(this.user_id)
@@ -55,6 +61,28 @@ export default {
         this.$emit('refresh')
       })
     },
+    charge(answer, post_id, post_user_id, price) {
+      var vm = this; // Keep reference to viewmodel
+      // 支払い
+      const specialist_id = this.user_id
+      const data = { post_user_id: post_user_id, price: price, specialist_id: specialist_id }
+      console.log("data", data)
+      // POST token and pay with connect
+      axios.post(process.env.API_DOMAIN_URL + "v1/charges/charge", data, {
+            headers: {
+            'access-token': VueCookie.get('access-token'),
+            'client': VueCookie.get('client'),
+            'uid': VueCookie.get('uid')
+          }
+        })
+      .then(response => {
+        console.log('charge_body:', response.data)
+        vm.setAnswer(answer, post_id, post_user_id, price)
+      })
+      .catch( (response) => {
+        console.error('error:', response);
+      });
+    },
     setAnswer(answer, post_id, post_user_id, price) {
       if (!answer) {
         alert('回答を入力してください。')
@@ -71,30 +99,11 @@ export default {
           })
         .then(response => {
           console.log('body:', response.data)
-          this.charge(post_user_id, price, this.user_id)
+          alert("回答しました。")
         })
         // pop navigator stack and back to previous page
         this.$store.commit('navigator/pop')
       }
-    },
-    charge(post_user_id, price, specialist_id) {
-      // 支払い
-      const data = { post_user_id: post_user_id, price: price, specialist_id: specialist_id }
-      console.log("data", data)
-      // POST token and pay with connect
-      axios.post(process.env.API_DOMAIN_URL + "v1/charges/charge", data, {
-            headers: {
-            'access-token': VueCookie.get('access-token'),
-            'client': VueCookie.get('client'),
-            'uid': VueCookie.get('uid')
-          }
-        })
-      .then(response => {
-        console.log('body:', response.data)
-      })
-      .catch( (response) => {
-        console.error('error:', response);
-      });
     },
     // get login user id from CustomToolbar
     setUserId(user_id) {

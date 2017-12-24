@@ -40,6 +40,7 @@ export default {
         })
         .then(response => {
           console.log('body:', response.data)
+          alert("質問しました。")
         })
         // pop navigator stack and back to previous page
         this.$store.commit('navigator/pop')

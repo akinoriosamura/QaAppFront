@@ -9,10 +9,10 @@
     </div>
     <div class="center"><slot>{{ title }}</slot></div>
     <div class="right">
-      <v-ons-button v-if="userName == ''" @click="login">
-        Facebook登録/ログイン
+      <v-ons-button v-if="userName == ''" @click="login" style="font-size: 20%;">
+        FB登録/ログイン
       </v-ons-button>
-      <v-ons-button v-else @click="logout">
+      <v-ons-button v-else @click="logout" style="font-size: 20%;">
         ログアウト
       </v-ons-button>
     </div>
@@ -141,3 +141,9 @@
     }
   };
 </script>
+
+<style>
+.authenticate {
+  position: relative;
+}
+</style>

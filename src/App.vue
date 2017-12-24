@@ -24,21 +24,19 @@
 // Just a linear interpolation formula
 const lerp = (x0, x1, t) => parseInt((1 - t) * x0 + t * x1, 10);
 // RGB colors
-const red = [244, 67, 54];
 const blue = [30, 136, 229];
-const purple = [103, 58, 183];
 export default {
   data () {
     return {
-      colors: red,
+      colors: blue,
       animationOptions: {},
       topPosition: 0,
       tabs: [
         {
-          label: this.md ? null : '質問',
-          icon: 'md-home',
+          label: '質問',
+          icon: this.md ? null : 'md-home',
           page: Questions,
-          theme: red,
+          theme: blue,
           style: this.md ? { maxWidth: '60px' } : {},
           top: -105 // Toolbar + Tabbar heights
         },
@@ -46,7 +44,7 @@ export default {
           label: '専門家',
           icon: this.md ? null : 'md-view-column',
           page: Specialists,
-          theme: red
+          theme: blue
         },
         {
           label: 'My Q&A',
@@ -58,7 +56,7 @@ export default {
           label: 'プロフィール',
           icon: this.md ? null : 'md-account',
           page: Register,
-          theme: purple
+          theme: blue
         }
       ]
     };
@@ -88,7 +86,7 @@ export default {
       }
     },
     title() {
-      return this.md ? 'Onsen UI' : this.tabs[this.index].title || this.tabs[this.index].label;
+      return this.tabs[this.index].title || this.tabs[this.index].label;
     },
     swipeTheme() {
       return this.md && {

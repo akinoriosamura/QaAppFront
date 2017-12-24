@@ -4,9 +4,6 @@
       <!--リストアイテムで専門家が並ぶからプロフィールページから取得？-->
       <v-ons-list v-if="user_id==-1">
         <v-ons-list-item v-for="result in results" :key="result.id">
-          <div class="left">
-            <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
-          </div>
           <div class="center">
             <span class="list-item__title">{{result.content}}</span>
           </div>
@@ -14,9 +11,6 @@
       </v-ons-list>
       <v-ons-list v-else>
         <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id, result.content, user_id, result.user_id)" tappable>
-          <div class="left">
-            <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40">
-          </div>
           <div class="center">
             <span class="list-item__title">{{result.content}}</span>
           </div>
