@@ -99,7 +99,7 @@ export default {
           })
         .then(response => {
           console.log('body:', response.data)
-          alert("回答しました。")
+          alert("回答しました。MyQ&Aから編集できます。")
         })
         // pop navigator stack and back to previous page
         this.$store.commit('navigator/pop')

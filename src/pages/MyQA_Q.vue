@@ -2,7 +2,7 @@
   <v-ons-page>
     <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
 
-      <v-ons-card>
+      <v-ons-card @click="pushEdit(post_id, content)" tappable>
           <div class="title"> 質問 </div>
           <div class="content">{{ content }}</div>
       </v-ons-card>
@@ -22,18 +22,37 @@
 import Vue from 'vue';
 import VueCookie from 'cookie-in-vue';
 import axios from 'axios';
+import Spe_QueContent from './Spe_QueContent.vue';
 
 export default {
   data() {
     return {
       results: '',
       user_id: -1,
-      post_id: 0,
+      post_id: -1,
       content: "not get",
       answer: "未回答"
     };
   },
   methods: {
+    pushEdit(post_id, content) {
+      this.$store.commit('navigator/push', {
+        extends: Spe_QueContent,
+        data() {
+          return {
+            // Spe_QueContentへの継承データ
+            post_id: post_id,
+            content: content,
+            type: 'edit',
+            // toolbarへの継承データ
+            toolbarInfo: {
+              backLabel: 'My Question',
+              title: "編集"
+            }
+          }
+        }
+      });
+    },
     getAnswer() {
       console.log("setuser in myqaq getanswer")
       console.log(this.user_id)

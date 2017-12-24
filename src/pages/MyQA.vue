@@ -146,6 +146,13 @@ export default {
         this.getMyanswers()
       }
     })
+    // 編集後データ更新
+    this.$store.watch((state) => this.$store.state.navigator.stack, () => {
+      if (this.$store.state.login && this.$store.state.tabbar.index==2) {
+        this.getMyquestions()
+        this.getMyanswers()
+      }
+    })
   }
 };
 </script>

@@ -3,7 +3,8 @@
     <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
         <textarea class="question" v-model="content" placeholder="ここに質問を記入してください。"></textarea>
 
-        <v-ons-button class="stripe-button" modifier="large" style="margin: 0px 0" @click="setContent(user_id, price, content, specialist_id)">{{ price }} 円で質問</v-ons-button>
+        <v-ons-button v-if="type=='create'" class="stripe-button" modifier="large" style="margin: 0px 0" @click="setContent(user_id, price, content, specialist_id)">{{ price }} 円で質問</v-ons-button>
+        <v-ons-button v-else-if="type=='edit'" class="stripe-button" modifier="large" style="margin: 0px 0" @click="editContent(post_id, content)">編集</v-ons-button>
 
   </v-ons-page>
 </template>
@@ -20,7 +21,9 @@ export default {
       specialist_id: -1,
       l_price: -1,
       price: -1,
-      content: ''
+      content: '',
+      post_id: -1,
+      type: 'create',
     };
   },
   methods: {
@@ -40,10 +43,34 @@ export default {
         })
         .then(response => {
           console.log('body:', response.data)
-          alert("質問しました。")
+          alert("質問しました。MyQ&Aから編集できます。")
         })
         // pop navigator stack and back to previous page
         this.$store.commit('navigator/pop')
+      }
+    },
+    editContent(post_id, content) {
+      console.log("editContent")
+      if (!content) {
+        alert('質問を入力してください。')
+      } else {
+        const data = { content: content }
+        console.log(data);
+        axios.put(process.env.API_DOMAIN_URL + "v1/posts/" + post_id, data, {
+          headers: {
+            'access-token': VueCookie.get('access-token'),
+            'client': VueCookie.get('client'),
+            'uid': VueCookie.get('uid'),
+            'content-type': 'application/json'
+          }
+        })
+        .then(response => {
+          console.log('body:', response.data)
+          alert("編集しました。")
+        })
+        // pop navigator stack and back to previous page
+        this.$store.commit('navigator/reset')
+        this.$store.commit('tabbar/set', 2)
       }
     },
     // get login user id from CustomToolbar
