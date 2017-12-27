@@ -96,6 +96,8 @@ export default {
           .catch( (response) => {
             console.error('error:', response);
           });
+        } else {
+          this.$store.commit('navigator/pop')
         }
       }
     },
