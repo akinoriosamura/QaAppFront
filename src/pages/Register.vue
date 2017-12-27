@@ -1,8 +1,7 @@
 <template>
   <v-ons-page>
     <v-ons-card v-show="results" style="height:100%;text-align:center;">
-      <img v-if="uploadedImage!=''" :src="uploadedImage" style="border-radius:50%; height:20%; margin: 0 auto;">
-      <img v-else :src="results.image" style="border-radius:50%; height:20%; margin: 0 auto;">
+      <img :src="results.image" style="border-radius:50%; height:20%; margin: 0 auto;">
       <div class="title" style="text-align=center center">
         {{ results.name }}
       </div>
@@ -14,7 +13,7 @@
           <v-ons-list-item>{{ results.l_price }}</v-ons-list-item>
         </v-ons-list>
       </div>
-      <v-ons-button modifier="large" style="margin: 1% 0" @click="push(user_id, results.name, results.image, results.document, results.l_price, uploadedImage)">プロフィール編集</v-ons-button>
+      <v-ons-button modifier="large" style="margin: 1% 0" @click="push(user_id, results.name, results.image, results.document, results.l_price)">プロフィール編集</v-ons-button>
       <v-ons-button v-show="role == 'member' || role == 'specialist'" modifier="large" style="margin: 1% 0" @click="cardRegister(user_id, role)">質問者登録</v-ons-button>
       <v-ons-button v-show="role == 'member' || role == 'questioner'" modifier="large" style="margin: 1% 0" @click="register()">回答者登録</v-ons-button>
     </v-ons-card>
@@ -31,9 +30,7 @@ export default {
   data() {
     return {
       results: '',
-      profile_image: '',
       user_id: -1,
-      uploadedImage: '',
       role: ''
     };
   },
@@ -53,26 +50,7 @@ export default {
         this.$emit('refresh')
       })
     },
-    getImage() {
-      axios.get(process.env.API_DOMAIN_URL + "v1/images/" + this.user_id, {
-        responseType: 'arraybuffer',
-        headers: {
-          'access-token': VueCookie.get('access-token'),
-          'client': VueCookie.get('client'),
-          'uid': VueCookie.get('uid')
-        }
-      })
-      .then(response => {
-        console.log('getImage:', response.data)
-        if (response.data["byteLength"] > 0) {
-          // convert arraybuffer to blob for showing
-          let blob = new Blob([response.data], {type: "image/png" });
-          this.createImage(blob)
-        }
-        this.$emit('refresh')
-      })
-    },
-    push(user_id, name, image, document, l_price, uploadedImage) {
+    push(user_id, name, image, document, l_price) {
       this.$store.commit('navigator/push', {
         extends: EditProfile,
         data() {
@@ -83,7 +61,6 @@ export default {
             image: image,
             document: document,
             l_price: l_price,
-            uploadedImage: uploadedImage,
             // toolbarへの継承データ
             toolbarInfo: {
               backLabel: 'プロフィール',
@@ -197,15 +174,6 @@ export default {
     redirectHome() {
       this.$store.commit('navigator/reset')
       this.$store.commit('tabbar/set', 0)
-    },
-    // アップロードした画像を表示
-    createImage(file) {
-      console.log("watch file:", file)
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        this.uploadedImage = e.target.result;
-      };
-      reader.readAsDataURL(file);
     }
   },
   // in creating register window
@@ -222,7 +190,6 @@ export default {
       if (this.$store.state.login) {
         this.user_id = VueCookie.get('id')
         this.getUserInfo()
-        this.getImage()
       }
     })
     // タブが変わった時に、ログアウト状態ならresultsもログアウト状態（null）にする
@@ -235,7 +202,6 @@ export default {
     this.$store.watch((state) => this.$store.state.navigator.stack, () => {
       if (this.$store.state.login && this.$store.state.tabbar.index==3) {
         this.getUserInfo()
-        this.getImage()
       }
     })
     // タブ遷移後role更新

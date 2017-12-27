@@ -5,8 +5,7 @@
       <v-ons-list v-if="user_id==-1">
         <v-ons-list-item v-for="result in results" :key="result.id">
           <div class="left">
-            <img class="list-item__thumbnail" v-if="uploadedImage!=''" :src="uploadedImage">
-            <img class="list-item__thumbnail" v-else :src="result.image">
+            <img class="list-item__thumbnail" :src="result.image">
           </div>
           <div class="center">
             <span class="list-item__title">{{result.name}}</span>
@@ -17,8 +16,7 @@
       <v-ons-list v-else>
         <v-ons-list-item v-for="result in results" :key="result.id" @click="push(result.id, result.name, result.image, result.document, result.l_price, user_id)" tappable>
           <div class="left">
-            <img class="list-item__thumbnail" v-if="uploadedImage!=''" :src="uploadedImage">
-            <img class="list-item__thumbnail" v-else :src="result.image">
+            <img class="list-item__thumbnail" :src="result.image">
           </div>
           <div class="center">
             <span class="list-item__title">{{result.name}}</span>
@@ -41,7 +39,6 @@ export default{
     return {
       results:'',
       user_id: -1,
-      uploadedImage: '',
     };
   },
   methods: {

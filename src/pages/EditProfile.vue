@@ -3,8 +3,8 @@
     <custom-toolbar v-bind="toolbarInfo" @setId-event="setUserId" @logout-event="redirectHome"></custom-toolbar>
     <v-ons-card style="height:120%;text-align:center;">
       <div class="img">
-        <img v-if="uploadedImage!=''" :src="uploadedImage" style="border-radius:50%; height:20%; margin: 0 auto;">
-        <img v-else :src="image" style="border-radius:50%; height:20%; margin: 0 auto;">
+        <img v-if="uploadedImage!=''" :src="uploadedImage" style="border-radius:50%; width: 20%; margin: 0 auto;">
+        <img v-else :src="image" style="border-radius:50%; width: 20%; margin: 0 auto;">
       </div>
       <div class="upload">
         <input type="file" v-on:change="onFileChange">
@@ -54,7 +54,7 @@ export default {
     edit(user_id, name, document, l_price, saveFile) {
       //save profile info othar than image
       // 最低金額が半角数字以外ならアラート
-      if (l_price.match(/[^0-9]+/)) {
+      if (String(l_price).match(/[^0-9]+/)) {
         alert("半角数字のみを入力してください。");
       } else if (l_price <= 50) {
         alert("50円以上で設定してください。")
@@ -73,15 +73,14 @@ export default {
           console.log('body:', response.data)
         })
         // save imagge
-        // {filename: file.name, file: file}
-        console.log("formData1")
-        const formData = new FormData();
-        formData.append('image[user_id]', user_id);
-        formData.append('image[filename]', "profile_image");
-        formData.append('image[file]', saveFile);
-        console.log(formData)
-        if (formData) {
-          axios.put(process.env.API_DOMAIN_URL + "v1/images/" + this.user_id, formData, {
+        if (saveFile) {
+          var vm = this;
+          console.log("formData1")
+          const formData = new FormData();
+          formData.append('image[profile_image]', saveFile);
+          console.log(saveFile)
+          console.log(formData)
+          axios.put(process.env.API_DOMAIN_URL + "v1/images/" + user_id, formData, {
             headers: {
               'access-token': VueCookie.get('access-token'),
               'client': VueCookie.get('client'),
@@ -91,13 +90,13 @@ export default {
           })
           .then(response => {
             console.log('body:', response.data)
+          // pop navigator stack and back to previous page
+          vm.$store.commit('navigator/pop')
           })
           .catch( (response) => {
             console.error('error:', response);
           });
         }
-        // pop navigator stack and back to previous page
-        this.$store.commit('navigator/pop')
       }
     },
     // アップロードしたデータにファイルチェンジ
@@ -133,7 +132,7 @@ export default {
 
 <style>
 .document-item {
-  height: 200%;
+  height: 50%;
 }
 .document {
   display: inline-block;
